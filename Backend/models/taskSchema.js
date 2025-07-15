@@ -1,56 +1,61 @@
 import mongoose, { Schema } from "mongoose";
-import User from "./userSchema";
+import User from "./userSchema.js";
+import Board from "./boardSchema.js";
 
 const taskSchema = new mongoose.Schema({
     title: {
         type: String,
-        unique: true,
-        require: true,
+        required: true,
     },
     description: {
         type: String,
-        require: true,
+        required: true,
+    },
+    boardId:{
+        type:Schema.Types.ObjectId,
+        ref:'Board',
+        require:true,
     },
     status: {
         type: String,
-        require: true,
+        required: true,
         default: 'Todo',
         enum: ['Todo', 'In Progress', 'Done']
     },
     priority: {
         type: String,
-        require: true,
+        required: true,
         default: 'Medium',
         enum: ['Low', 'Medium', 'High']
     },
     assignedTo: {
         type: Schema.Types.ObjectId,
         ref: User,
-        default: null,
+        require:true,
     },
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: User,
-        require: true,
+        required: true,
     },
     createdAt: {
         type: Date,
-        require: true,
+        required: true,
         default: new Date(Date.now())
     },
     updatedAt: {
         type: Date,
-        require: true,
+        required: true,
         default: new Date(Date.now())
     },
     lastEditedBy: {
         type: Schema.Types.ObjectId,
         ref: User,
-        require: true,
+        required: true,
     },
     position: {
         type: Number,
-        require: true,
+        required: true,
     },
     conflict: {
         isConflicted: {

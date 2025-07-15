@@ -1,31 +1,37 @@
 import mongoose, { Schema } from "mongoose";
-import User from "./userSchema";
-import Task from "./taskSchema";
+import User from "./userSchema.js";
+import Task from "./taskSchema.js";
+import Board from "./boardSchema.js";
 
 const activityLogSchema = new mongoose.Schema({
+    boardId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Board',
+        require: true,
+    },
     taskId: {
         type: Schema.Types.ObjectId,
-        ref: Task,
-        require: true,
+        ref: 'Task',
+        required: true,
     },
     userId: {
         type: Schema.Types.ObjectId,
-        ref: User,
-        require: true,
-    },
-    action: {
-        type: String,
-        require: true,
-        enum: ["create", "update", "delete", "assign", "re-assign", "drag", "status-change", "priority-change", "conflict-resolve"]
+        ref: 'User',
+        required: true,
     },
     description: {
         type: String,
-        require: true
+        required: true
     },
     timestamp: {
         type: Date,
-        require: true,
-    }
+        required: true,
+    },
+    action: {
+        type: String,
+        required: true,
+        enum: ["create", "update", "delete", "assign", "re-assign", "drag", "status-change", "priority-change", "conflict-resolve"]
+    },
 })
 
 const ActivityLog = mongoose.model('ActivityLog', activityLogSchema)

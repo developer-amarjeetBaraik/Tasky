@@ -2,29 +2,31 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
     name:{
-        Type:String,
-        require:true,
+        type:String,
+        required:true,
     },
     email:{
-        Type:String,
-        require:true,
+        type:String,
+        required:true, 
         unique:true,
     },
     password:{
-        Type:String,
-        require:true,
+        type:String,
+        required:true,
     },
     createdAt:{
-        Type:Date,
-        require:true,
+        type:Date,
+        required:true,
         default: new Date(Date.now())
     },
     updatedAt:{
-        Type:Date,
+        type:Date,
+        default:new Date(Date.now()) 
     },
     isOnline:{
-        Type:Boolean,
-    }
+        type:Boolean,
+        default:false
+    },
 })
 
 userSchema.methods.toSafeObject = function (){
