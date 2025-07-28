@@ -28,7 +28,7 @@ await mongoose.connect(process.env.MONGO_URL)
 
 // routes
 app.use('/auth', userAuthRoute)
-app.use('/board/:boardId', authenticate, authenticateBoardMembership, boardRouter)
+app.use('/board', authenticate, boardRouter)
 
 app.get('/', (req, res) => {
     res.send({ message: 'Hello there.' })
