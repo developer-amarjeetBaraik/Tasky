@@ -1,23 +1,23 @@
 import DevError from "../errors/devError.js"
 import { verifyAuthToken } from "../helper/jwtAuthTokenHelper.js"
 
-const authenticate = (req, res, next)=>{
+const authenticate = (req, res, next) => {
     const authToken = req.cookies.authToken
-    if(!authToken){
+    if (!authToken) {
         return res.status(400).json({
-            statusCode:400,
-            message:'Bad request. auth token is missing.'
+            statusCode: 400,
+            message: 'Bad request. auth token is missing.'
         })
     }
     try {
         const authenticated = verifyAuthToken(authToken)
-        if(authenticated){
+        if (authenticated) {
             req.user = authenticated
             next()
-        }else{
-            res.status(401).json({
-                statusCode:401,
-                message:'Invalid auth token.'
+        } else {
+            res.status(401).clearCookie('authToken').json({
+                statusCode: 401,
+                message: 'Invalid auth token.'
             })
         }
     } catch (error) {

@@ -3,6 +3,27 @@ import Board from "../models/boardSchema.js"
 
 
 /**
+ * This function retrieves all boards that a user can edit based on their user ID.
+ * @param userId - The `userId` parameter is the unique identifier of a user for whom you want to
+ * retrieve all boards that they can edit.
+ * @returns The function `getAllBoardsByUserId` is returning a Promise that resolves to an array of
+ * boards that the user with the specified `userId` can edit.
+ */
+export const getAllBoardsByUserId = async (userId)=>{
+    if(!userId) throw new DevError("UserId can't be undefined or null and i can be only of length 24 characters.")
+
+        try {
+            const boards = await Board.find({canEdit:{$in:[userId]}}).select('-__v').populate({path:'admins canEdit createdBy',select:'name email'}).lean()
+            if(boards.length > 0){
+                return boards
+            }
+            return false
+        } catch (error) {
+            throw new DevError(error)
+        }
+}
+
+/**
  * The function `checkIfBoardAdminByUserId` checks if a user owns a board based on the board ID and
  * user ID.
  * @param boardId - The `boardId` parameter is the unique identifier of a board in the database. It is

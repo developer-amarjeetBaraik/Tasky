@@ -6,6 +6,36 @@ import getPositionForTaskInItsStatusGroup from "./utilsDbQuray/getPositionForTas
 import isTaskTitleDuplicateInBoard from "./utilsDbQuray/isTaskTitleDuplicateInBoard.js"
 import leastTaskUserInBoard from "./utilsDbQuray/leastTaskUserInBoard.js"
 
+// Helper functions
+const userLookupWithAbstractionAndReplace = (localField) => {
+    return [
+        {
+            $lookup: {
+                from: 'users',
+                let: { userId: `$${localField}` },
+                pipeline: [
+                    { $match: { $expr: { $eq: ['$_id', '$$userId'] } } },
+                    {
+                        $project: {
+                            _id: 1,
+                            name: 1,
+                            email: 1,
+                            // add more fields you want from the user
+                        }
+                    }
+                ],
+                as: localField
+            }
+        },
+        {
+            $unwind: {
+                path: `$${localField}`,
+                preserveNullAndEmptyArrays: true
+            }
+        }
+    ]
+}
+
 export const createTask = async (boardId, userId, title, description, priority, status) => {
     const isDuplicateTitle = await isTaskTitleDuplicateInBoard(title, boardId)
     if (isDuplicateTitle) throw new AppError(`Duplicate title. '${title}' titled task already exist in this board.`, 409)
@@ -44,6 +74,10 @@ export const getTasksByBoardId = async (boardId) => {
 
     try {
         const grouped = await Task.aggregate([
+            ...userLookupWithAbstractionAndReplace('assignedTo'),
+            ...userLookupWithAbstractionAndReplace('createdBy'),
+            ...userLookupWithAbstractionAndReplace('lastEditedBy'),
+
             { $match: { boardId: boardId } },
             { $sort: { position: 1 } },
             {
@@ -51,7 +85,7 @@ export const getTasksByBoardId = async (boardId) => {
                     _id: "$status",
                     tasks: { $push: "$$ROOT" }
                 }
-            }
+            },
         ]);
 
         const groupedObj = {};

@@ -4,17 +4,43 @@ import AppError from '../errors/appError.js'
 import toMongoObjectId from '../utils/toMongoObjectId.js'
 import authenticateBoardMembership from '../middlewares/authenticateBoardMembership.js'
 import DevError from '../errors/devError.js'
-import { checkBoardMembershipByUserId, checkIfBoardAdminByUserId, createBoard, deleteBoard, grantBoardMembershipByUserId, removeUserFromBoard } from '../DBQuery/boardDbQuary.js'
+import { checkBoardMembershipByUserId, checkIfBoardAdminByUserId, createBoard, deleteBoard, getAllBoardsByUserId, grantBoardMembershipByUserId, removeUserFromBoard } from '../DBQuery/boardDbQuary.js'
 
 const router = express.Router({ mergeParams: true })
 
 const testBoardId = process.env.TEST_BOARD_ID
 
+router.get('/all-boards', async (req, res, next) => {
+    let userId = req.user?._id
+    if (!userId) throw new DevError("Something went wrong with userId parsing.")
+    userId = toMongoObjectId(userId)
+
+    try {
+        const boards = await getAllBoardsByUserId(userId)
+        if(!boards){
+            return res.status(200).json({
+                statusCode:200,
+                success:true,
+                message:`There is no board for userId(${userId}), create your first board.`,
+                boards:[]
+            })
+        }
+        res.status(200).json({
+            statusCode:200,
+            success:true,
+            message:`These are your boards.`,
+            boards
+        })
+    } catch (error) {
+        next(error)
+    }
+})
+
 /* This code snippet defines a POST route `/create-board` that handles the creation of a new board.
 Here's a breakdown of what the code is doing: */
 router.post('/create-board', async (req, res, next) => {
     const { name, description } = req.body
-    let userId = req.user?.id
+    let userId = req.user?._id
     if (!name || name?.length < 5) throw new AppError("name can't be undefined and it's length must be greater than 5 characters.")
     if (!description || description?.length < 5) throw new AppError("description can't be undefined and it's length must be greater than 10 characters.")
     if (!userId) throw new DevError("Something went wrong with userId parsing.")
@@ -47,7 +73,7 @@ snippet defines a DELETE route `/delete-board` that handles the deletion of a bo
 breakdown of what the code is doing: */
 boardEventWithAuthRouter.delete('/delete-board', async (req, res, next) => {
     let boardId = req.params?.boardId
-    let userId = req.user?.id
+    let userId = req.user?._id
     if (!boardId || boardId?.length !== 24) throw new AppError("boardId can't be undefined and it can be only of lenght 24 characters.")
     if (!userId || userId?.length !== 24) throw new DevError("userId can't be undefined and it can be only of lenght 24 characters.")
     boardId = toMongoObjectId(boardId)
@@ -85,7 +111,7 @@ responsible for handling the action of adding a user to a board. Here's a breakd
 is doing: */
 boardEventWithAuthRouter.patch('/add-user', async (req, res, next) => {
     let boardId = req.params?.boardId
-    let userId = req.user?.id
+    let userId = req.user?._id
     let add_to = req.query?.add_to
     if (!boardId || boardId?.length !== 24) throw new AppError("boardId can't be undefined and it can be only of lenght 24 characters.")
     if (!userId || userId?.length !== 24) throw new AppError("userId can't be undefined and it can be only of lenght 24 characters.")
@@ -137,7 +163,7 @@ is responsible for handling the action of removing a user from a board. Here's a
 the code is doing: */
 boardEventWithAuthRouter.patch('/remove-board-user', async (req, res, next) => {
     let boardId = req.params?.boardId
-    let userId = req.user?.id
+    let userId = req.user?._id
     let remove_to = req.query?.remove_to
     if (!boardId || boardId?.length !== 24) throw new AppError("boardId can't be undefined and it can be only of lenght 24 characters.")
     if (!userId || userId?.length !== 24) throw new AppError("userId can't be undefined and it can be only of lenght 24 characters.")
@@ -195,7 +221,7 @@ defines a PATCH route `/leave-board` within the `boardEventWithAuthRouter` route
 responsible for handling the action of a user leaving a board. */
 boardEventWithAuthRouter.patch('/leave-board', async (req, res, next) => {
     let boardId = req.params?.boardId
-    let userId = req.user?.id
+    let userId = req.user?._id
     if (!boardId || boardId?.length !== 24) throw new AppError("boardId can't be undefined and it can be only of lenght 24 characters.")
     if (!userId || userId?.length !== 24) throw new AppError("userId can't be undefined and it can be only of lenght 24 characters.")
     boardId = toMongoObjectId(boardId)

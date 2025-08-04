@@ -4,7 +4,7 @@ import toMongoObjectId from "../utils/toMongoObjectId.js"
 
 const authenticateBoardMembership = async (req, res, next)=>{
     let { boardId } = req.params
-    let userId = req.user?.id
+    let userId = req.user?._id
 
     boardId = toMongoObjectId(boardId, 'boardId')
     userId = toMongoObjectId(userId,'userId')

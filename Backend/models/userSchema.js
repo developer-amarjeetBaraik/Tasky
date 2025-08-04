@@ -1,37 +1,37 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
+    name: {
+        type: String,
+        required: true,
     },
-    email:{
-        type:String,
-        required:true, 
-        unique:true,
+    email: {
+        type: String,
+        required: true,
+        unique: true,
     },
-    password:{
-        type:String,
-        required:true,
+    password: {
+        type: String,
+        required: true,
     },
-    createdAt:{
-        type:Date,
-        required:true,
+    createdAt: {
+        type: Date,
+        required: true,
         default: new Date(Date.now())
     },
-    updatedAt:{
-        type:Date,
-        default:new Date(Date.now()) 
+    updatedAt: {
+        type: Date,
+        default: new Date(Date.now())
     },
-    isOnline:{
-        type:Boolean,
-        default:false
+    isOnline: {
+        type: Boolean,
+        default: false
     },
 })
 
-userSchema.methods.toSafeObject = function (){
-    const {_id, name, email, isOnline} = this;
-    return {_id, name, email, isOnline};
+userSchema.methods.toSafeObject = function () {
+    const { _id, name, email, createdAt, updatedAt, isOnline } = this;
+    return { _id, name, email, createdAt, updatedAt, isOnline };
 }
 
 const User = mongoose.model('User', userSchema)

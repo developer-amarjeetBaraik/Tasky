@@ -37,11 +37,3 @@ const boardSchema = new mongoose.Schema({
 const Board = mongoose.model('Board', boardSchema)
 
 export default Board
-
-// {
-//   _id: ObjectId,
-//   name: "Main Team Board",
-//   createdAt: Date,
-//   createdBy: ObjectId,
-//   description: String
-// }

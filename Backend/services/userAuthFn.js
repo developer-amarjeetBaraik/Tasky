@@ -26,7 +26,7 @@ export const signupUser = async (name, email, password) => {
         // Check if the user already exsist
         const alreadyExist = await findUserByEmail(email)
         if (alreadyExist) {
-            throw new AppError("User with this email already exsists. Please login.", 403)
+            return "Alredy exist"
         }
         // Hash the plain password
         const hashedPassword = await HashPassword(password)
@@ -44,7 +44,7 @@ export const signupUser = async (name, email, password) => {
         const addedUserInDefaultBoard = await addUserInCanEditInBoard(defaultBoardId, newUser._id, { session })
         if(!addedUserInDefaultBoard) await session.abortTransaction()
         await session.commitTransaction()
-        return newUser
+        return newUser.toSafeObject()
     } catch (error) {
         await session.abortTransaction()
         throw new DevError(error)
@@ -57,13 +57,13 @@ export const loginUser = async (res, email, password) => {
     try {
         const user = await findUserByEmail(email)
         if (!user) {
-            throw new AppError("This email is not exist in our system. Please sign-up first.", 401)
+            return null
         }
         const isMatched = await matchPassword(password, user.password)
         if (!isMatched) {
-            throw new AppError('Incorrect email or password', 401)
+            return false
         }
-        return user
+        return user.toSafeObject()
     } catch (error) {
         throw new DevError(error)
     }
