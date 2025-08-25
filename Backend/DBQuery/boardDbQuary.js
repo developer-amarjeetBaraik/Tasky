@@ -1,6 +1,19 @@
 import DevError from "../errors/devError.js"
 import Board from "../models/boardSchema.js"
 
+export const getBoardByBoardId = async (boardId)=>{
+    if(!boardId) throw new DevError("boardId can't be undefined or null and i can be only of length 24 characters.")
+
+        try {
+            const boards = await Board.find({_id:boardId}).select('-__v').populate({path:'admins canEdit createdBy',select:'name email'}).lean()
+            if(boards.length > 0){
+                return boards
+            }
+            return false
+        } catch (error) {
+            throw new DevError(error)
+        }
+}
 
 /**
  * This function retrieves all boards that a user can edit based on their user ID.

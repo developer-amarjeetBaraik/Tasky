@@ -12,6 +12,11 @@ const boardSchema = new mongoose.Schema({
         type: String,
         default: 'This is defalut description, please change it according to your purpose.'
     },
+    Stages:{
+        type:[String],
+        require:true,
+        default:'Todo'
+    },
     createdAt: {
         type: Date,
         required: true,

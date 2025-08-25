@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useRef } from "react"
 import { Toaster, toast } from 'sonner'
 import { useTheme } from "./ui/theme-provider"
 import { cn } from "@/lib/utils"
@@ -60,7 +60,6 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Toaster richColors position='top-center' theme={theme} duration={4000} />
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form onSubmit={handleFormSubmit} className="p-6 md:p-8">

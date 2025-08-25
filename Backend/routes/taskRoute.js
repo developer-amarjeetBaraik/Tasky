@@ -32,7 +32,7 @@ router.get('/all', async (req, res, next) => {
 })
 
 router.post('/create-task', async (req, res, next) => {
-    let userId = req.user.id
+    let userId = req.user._id
     let { boardId } = req.params
     let { title, description, priority, status } = req.body
 
@@ -44,24 +44,21 @@ router.post('/create-task', async (req, res, next) => {
     priority = priority?.trim()
     status = status?.trim()
 
-    if (!title || title.length < 5 || typeof (title) === String) {
-        throw new AppError("'title' can't be undefined, less then 5 characters or can be only string.", 400)
+    if (!title || title.length < 5 || title.length > 40 || typeof (title) === String) {
+        throw new AppError("'title' can't be undefined or less then 5 or grater then 40 characters and can be only string.", 400)
     }
-    if (!description || description.length < 10 || typeof (description) === String) {
-        throw new AppError("'description' can't be undefined, less then 10 characters or can be only string.", 400)
+    if (!description || description.length < 10 || description.length > 70 || typeof (description) === String) {
+        throw new AppError("'description' can't be undefined or less then 10 or grater then 70 characters and can be only string.", 400)
     }
-    if (!priority || !priority === ('Low' || 'Medium' || 'High')) {
-        throw new AppError("'priority' can't be undefined or can be only 'Low', 'Medium' or 'High'.", 400)
-    }
-    if (!status || !status === ('Todo' || 'In Progress' || 'Done')) {
-        throw new AppError("'status' can't be undefined or can be only 'Todo', 'In Progress' or 'Done'.", 400)
+    if (!priority === ('Low' || 'Medium' || 'High')) {
+        throw new AppError("'priority' can be only 'Low', 'Medium' or 'High'.", 400)
     }
 
     try {
         const newTask = await createTask(boardId, userId, title, description, priority, status)
         if (!newTask) throw new AppError("Something went wrong.", 500)
-        res.status(200).json({
-            statusCode: 200,
+        res.status(201).json({
+            statusCode: 201,
             success: true,
             message: 'Task created successfully.',
             task: newTask
@@ -105,7 +102,7 @@ changeTaskRouter.delete('/delete-task', async (req, res, next) => {
 })
 
 changeTaskRouter.patch('/change-status', async (req, res, next) => {
-    let userId = req.user.id
+    let userId = req.user._id
     let { boardId, taskId } = req.params
     let newStatus = req.query?.newStatus
 
@@ -142,7 +139,7 @@ changeTaskRouter.patch('/change-status', async (req, res, next) => {
 })
 
 changeTaskRouter.patch('/change-priority', async (req, res, next) => {
-    let userId = req.user.id
+    let userId = req.user._id
     let { boardId, taskId } = req.params
     let newPriority = req.query?.newPriority
 
@@ -179,7 +176,7 @@ changeTaskRouter.patch('/change-priority', async (req, res, next) => {
 })
 
 changeTaskRouter.patch('/change-title', async (req, res, next) => {
-    let userId = req.user.id
+    let userId = req.user._id
     let { boardId, taskId } = req.params
     let newTitle = req.query?.newTitle
 
@@ -216,7 +213,7 @@ changeTaskRouter.patch('/change-title', async (req, res, next) => {
 })
 
 changeTaskRouter.patch('/change-description', async (req, res, next) => {
-    let userId = req.user.id
+    let userId = req.user._id
     let { boardId, taskId } = req.params
     let newDescription = req.query?.newDescription
 
@@ -253,7 +250,7 @@ changeTaskRouter.patch('/change-description', async (req, res, next) => {
 })
 
 changeTaskRouter.patch('/change-position', async (req, res, next) => {
-    let userId = req.user.id
+    let userId = req.user._id
     let { boardId, taskId } = req.params
     let inStatusGroup = req.query?.inStatusGroup
     let desiredPosition = req.query?.desiredPosition || 1
@@ -296,7 +293,7 @@ changeTaskRouter.patch('/change-position', async (req, res, next) => {
 })
 
 changeTaskRouter.patch('/assign-to', async (req, res, next) => {
-    let assignBy = req.user.id
+    let assignBy = req.user._id
     let { boardId, taskId } = req.params
     let assignTo = req.query?.assignTo
 

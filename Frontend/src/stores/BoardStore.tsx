@@ -7,10 +7,26 @@ import { toast } from 'sonner'
 export const BoardContext = createContext<BoardContextType | undefined>(undefined)
 
 const BoardStore = ({ children }: { children: React.ReactNode }) => {
-    const { isAuthenticated } = useUserAuth()
+    const { user, isAuthenticated } = useUserAuth()
     const [boards, setBoards] = useState<board[] | null>(null)
+    const [isUserAdmin, setIsUserAdmin] = useState(false)
     const [boardLoading, setBoardLoading] = useState<boolean>(true)
     const [activeBoard, setActiveBoard] = useState<board | null>(null)
+
+    // check if the user is admin of the board
+    useEffect(() => {
+        if (activeBoard?.canEdit) {
+            for (const e of activeBoard?.canEdit!) {
+                console.log(e)
+                if (e._id === user?._id) {
+                    setIsUserAdmin(true)
+                    break;
+                } else {
+                    setIsUserAdmin(false)
+                }
+            }
+        }
+    }, [activeBoard])
 
     // fetch all boards
     useEffect(() => {
@@ -40,7 +56,7 @@ const BoardStore = ({ children }: { children: React.ReactNode }) => {
     }, [isAuthenticated])
 
     return (
-        <BoardContext.Provider value={{ boards, boardLoading, activeBoard, setActiveBoard }}>
+        <BoardContext.Provider value={{ boards, isUserAdmin, boardLoading, activeBoard, setActiveBoard }}>
             {children}
         </BoardContext.Provider>
     )

@@ -1,3 +1,4 @@
+import type React from 'react'
 import { cn, toLocalDateOnly } from '@/lib/utils'
 import type { taskType } from '@/types'
 import {
@@ -12,14 +13,51 @@ import {
     TooltipTrigger
 } from './tooltip'
 import { useUserAuth } from '@/hooks/useUserAuth'
+import TaskOptionDropdown from './TaskOptionDropdown'
+import AlertDialogPopup from './AlertDialogPopup'
+import { useEffect, useState } from 'react'
+import useTaskFeatures from '@/hooks/useTaskFeatures'
+import { useParams } from 'react-router-dom'
+import { toast } from 'sonner'
 
-const TaskCard = ({ task }: { task: taskType }) => {
+const TaskCard = ({ task, className, style }: { task: taskType, className?: string, style?: React.CSSProperties }) => {
+    const { boardId } = useParams()
     const { user } = useUserAuth()
+    const { setTasks, deleteTaskOnServer } = useTaskFeatures()
+    const [deletingTask, setDeletingTask] = useState(false)
+    const [isDeleteAlertDialogOpen, setIsDeleteAlertDialogOpen] = useState(false)
+
+    // delete task
+    const handleDeleteTask = () => {
+        setDeletingTask(true)
+
+        deleteTaskOnServer(boardId, task._id, (error, success) => {
+            if (success) {
+                setTasks(prevTasks => {
+                    if (!prevTasks) return prevTasks;
+
+                    const statusGroup = prevTasks[task.status] ?? [];
+
+                    return {
+                        ...prevTasks,
+                        [task.status]: [...statusGroup.filter(t => t._id !== task._id)],
+                    };
+                });
+            }
+            if (error) {
+                toast.error(error.message, {
+                    richColors: true
+                })
+            }
+            setDeletingTask(false)
+        })
+    }
     return (
         <Card className={cn(
-            "p-4 w-full bg-[#FFFFFF] dark:bg-muted",
-            "gap-2 cursor-default"
-        )}>
+            "group p-4 w-full bg-[#FFFFFF] dark:bg-muted",
+            "gap-2",
+            className
+        )} style={style}>
             {/* badges */}
             <div className='-mt-2 w-full flex justify-end items-center gap-1'>
                 {task.assignedTo._id === user?._id && <>
@@ -54,26 +92,32 @@ const TaskCard = ({ task }: { task: taskType }) => {
                         </TooltipContent>
                     </Tooltip>
                 </>}
+                <TaskOptionDropdown deletingTask={deletingTask} setIsDeleteAlertDialogOpen={setIsDeleteAlertDialogOpen} task={task} />
+
+                {/* Delete task alert dialog box popup */}
+                <AlertDialogPopup data-no-drag open={isDeleteAlertDialogOpen} onOpenChange={setIsDeleteAlertDialogOpen} alertTitle='Are you absolutely sure?' alertDescription='This action cannot be undone. This will permanently delete this task.' continueVerient='Destructive' continueBtnText='Delete' onContinue={handleDeleteTask}/>
             </div>
+            {/* title */}
             <CardTitle className='w-full'>
                 {task.title.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
             </CardTitle>
-            <CardDescription className='w-full line-clamp-2 hover:line-clamp-none'>
-                {task.description} ohasd iasodhf asidhf ashdifh asdjfi ashdfi asdhfias dfih sadhfosahdfi saidfhia  asdoif hioashf ihsdf  hasidf
+            {/* description */}
+            <CardDescription className='w-full line-clamp-3 hover:line-clamp-none'>
+                {task.description}
             </CardDescription>
             <div className='text-sm'>
                 {/* Assigned to */}
                 <Tooltip>
                     <TooltipTrigger>
                         <span className='text-[13px]'>Assigned to: </span>
-                        <span className='text-[15px] font-semibold'>{task.assignedTo.name}</span>
+                        <span className='text-[15px]'>{task.assignedTo.name}</span>
                     </TooltipTrigger>
                     <TooltipContent>
                         Assigned to {task.assignedTo._id === user?._id ? 'you.' : task.assignedTo.name}
                     </TooltipContent>
                 </Tooltip>
             </div>
-            <CardDescription className='[&>div]:flex [&>div]:gap-1 [&_p]:text-primary [&_span]:text-[13px] [&_p]:text-[15px] [&_p]:font-semibold'>
+            <CardDescription className='[&>div]:flex [&>div]:gap-1 [&_p]:text-primary [&_span]:text-[13px] [&_p]:text-[15px] [&_p]:font-semibold hidden group-hover:block'>
                 <div>
                     <span>Last Updated: </span>
                     <p>{toLocalDateOnly(task.updatedAt)}</p></div>

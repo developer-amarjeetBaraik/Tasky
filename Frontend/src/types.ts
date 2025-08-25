@@ -1,3 +1,6 @@
+import type { Dispatch, SetStateAction } from "react"
+import type React from "react"
+
 // type - user auth context
 export type UserAuthContextType = {
     user: userObjectType | null,
@@ -10,6 +13,7 @@ export type UserAuthContextType = {
 
 // type - board context
 export type BoardContextType = {
+    isUserAdmin: boolean
     boards: board[] | null
     boardLoading: boolean,
     activeBoard: board | null
@@ -19,8 +23,13 @@ export type BoardContextType = {
 // type - task context
 export type TaskContextType = {
     tasks: { [key: string]: taskType[] | null } | null
+    setTasks: React.Dispatch<React.SetStateAction<TaskContextType['tasks']>>
     taskLoading: boolean,
-    fetchAllTasks: (boardId: string) => void
+    fetchAllTasks: (boardId: string | undefined) => void,
+    addTaskOnServer: (boardId: string | undefined, taskInfo: unknown, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void,
+    changeStatusOnServer: (boardId: string | undefined, taskId: string, oldStatus: string, newStatus: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
+    changePriorityOnServer: (boardId: string | undefined, taskId: string, newPriority: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
+    deleteTaskOnServer: (boardId: string | undefined, taskId: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
 }
 
 // type - user type
@@ -51,7 +60,7 @@ export type taskType = {
     description: string,
     boardId: string,
     status: string,
-    priority: string,
+    priority: string | null,
     assignedTo: taskUser,
     createdBy: taskUser,
     createdAt: Date,
@@ -63,12 +72,14 @@ export type taskType = {
 // type - success callback type
 export type callbackSuccessType = {
     message: string
+    res?: any
 }
 
 // type - error callback type
 export type callbackErrorType = {
     message: string,
-    error: Error
+    error?: Error,
+    metaData?: any,
 }
 
 // type - custom error type
@@ -81,8 +92,22 @@ export type board = {
     _id: string
     name: string
     description?: string
+    stages: [string]
     createdBy?: { _id: string, name: string, email: string }
     createdAt?: string
     canEdit?: { _id: string, name: string, email: string }[]
     admins?: { _id: string, name: string; email: string }[]
+}
+
+export interface AlertDialogPopupType {
+    open?: boolean;
+      onOpenChange?: (open: boolean) => void;
+      alertTitle: React.ReactNode;
+      alertDescription?: React.ReactNode;
+      onCancel?: () => void;
+      onContinue?: () => void;
+      cancelBtnText?: string;
+      continueBtnText?: string;
+      continueVerient?: "Default" | "Destructive";
+      children?: React.ReactNode; // trigger
 }

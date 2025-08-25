@@ -34,6 +34,11 @@ userSchema.methods.toSafeObject = function () {
     return { _id, name, email, createdAt, updatedAt, isOnline };
 }
 
+// Static method for populate
+userSchema.statics.getSafeProjection = function() {
+  return '_id name email';
+};
+
 const User = mongoose.model('User', userSchema)
 
 export default User

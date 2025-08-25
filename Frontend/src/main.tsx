@@ -12,6 +12,7 @@ import { AuthProtectedRoutes, CheckBoardMembership, RestrictIfAuthenticated } fr
 import BoardStore from './stores/BoardStore.tsx'
 import BoardPage from './layouts/BoardPage.tsx'
 import TaskStore from './stores/TaskStore.tsx'
+import { Toaster } from 'sonner'
 
 const router = createBrowserRouter([
   {
@@ -60,6 +61,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
       <UserAuthStore>
+        <Toaster />
         <RouterProvider router={router} />
       </UserAuthStore>
     </ThemeProvider>

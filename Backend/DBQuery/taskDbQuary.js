@@ -5,6 +5,9 @@ import Task from "../models/taskSchema.js"
 import getPositionForTaskInItsStatusGroup from "./utilsDbQuray/getPositionForTaskInItsStatusGroup.js"
 import isTaskTitleDuplicateInBoard from "./utilsDbQuray/isTaskTitleDuplicateInBoard.js"
 import leastTaskUserInBoard from "./utilsDbQuray/leastTaskUserInBoard.js"
+import { getBoardByBoardId } from "./boardDbQuary.js"
+import Board from "../models/boardSchema.js"
+import User from "../models/userSchema.js"
 
 // Helper functions
 const userLookupWithAbstractionAndReplace = (localField) => {
@@ -40,6 +43,11 @@ export const createTask = async (boardId, userId, title, description, priority, 
     const isDuplicateTitle = await isTaskTitleDuplicateInBoard(title, boardId)
     if (isDuplicateTitle) throw new AppError(`Duplicate title. '${title}' titled task already exist in this board.`, 409)
 
+    if (!status) {
+        status = getBoardByBoardId(boardId)
+        status = status.stages[0]
+    }
+
     try {
         let newTask = new Task({
             title: title,
@@ -53,6 +61,7 @@ export const createTask = async (boardId, userId, title, description, priority, 
             status: status,
         })
         newTask = await newTask.save()
+        newTask = await Task.findById(newTask._id).populate('assignedTo createdBy lastEditedBy', User.getSafeProjection());
         return newTask
     } catch (error) {
         throw new DevError(error)
@@ -73,27 +82,39 @@ export const getTasksByBoardId = async (boardId) => {
     if (!boardId) throw new DevError("boardId can't be undefined.")
 
     try {
-        const grouped = await Task.aggregate([
-            ...userLookupWithAbstractionAndReplace('assignedTo'),
-            ...userLookupWithAbstractionAndReplace('createdBy'),
-            ...userLookupWithAbstractionAndReplace('lastEditedBy'),
-
-            { $match: { boardId: boardId } },
-            { $sort: { position: 1 } },
+        const grouped = await Board.aggregate([
+            { $unwind: '$stages' },
             {
-                $group: {
-                    _id: "$status",
-                    tasks: { $push: "$$ROOT" }
+                $lookup: {
+                    from: 'tasks',
+                    let: { stageName: '$stages' },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ['$status', '$$stageName'] } } },
+                        { $sort: { position: 1 } },
+                        ...userLookupWithAbstractionAndReplace('assignedTo'),
+                        ...userLookupWithAbstractionAndReplace('createdBy'),
+                        ...userLookupWithAbstractionAndReplace('lastEditedBy'),
+                    ],
+                    as: 'tasks'
                 }
             },
+            {
+                $group: {
+                    _id: null,
+                    stageTasks: {
+                        $push: {
+                            k: '$stages',
+                            v: '$tasks'
+                        }
+                    }
+                }
+            },
+            {
+                $replaceRoot: { newRoot: { $arrayToObject: '$stageTasks' } }
+            }
         ]);
 
-        const groupedObj = {};
-        grouped.forEach(group => {
-            groupedObj[group._id] = group.tasks;
-        });
-
-        return groupedObj
+        return grouped[0]
     } catch (error) {
         throw new DevError(error)
     }

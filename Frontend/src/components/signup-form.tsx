@@ -69,7 +69,6 @@ export function SignupForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Toaster richColors position='top-center' theme={theme} duration={4000} />
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form onSubmit={handleFormSubmit} className="p-6 md:p-8">

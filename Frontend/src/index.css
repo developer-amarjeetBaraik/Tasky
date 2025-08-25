@@ -89,7 +89,7 @@
   --cream-light: #FFF8E1;
   --cream-medium: #FBE9E7;
   --cream-dark: #FFE0B2;
-  --scroll-track: #e3e3e3;
+  --scroll-track: #e3e3e300;
   --scroll-thumb: #c5c5c5;
 }
 
@@ -130,7 +130,7 @@
   --cream-light: #FFF8E1;
   --cream-medium: #FBE9E7;
   --cream-dark: #FFE0B2;
-  --scroll-track: #1e1e1e;
+  --scroll-track: #1e1e1e00;
   --scroll-thumb: #3e3e3e;
 }
 

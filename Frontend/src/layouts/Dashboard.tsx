@@ -1,4 +1,3 @@
-import { Toaster } from "sonner"
 import AppLogo from "@/components/ui/AppLogo"
 import { ModeToggle } from "@/components/ui/mode-toggle"
 import ProfileMenu from "@/components/ui/ProfileMenu"
@@ -15,7 +14,6 @@ const Dashboard = () => {
     const { boardLoading, boards } = useBoardFeatures()
     return (
         <div className="w-full h-full min-h-screen flex flex-col">
-            <Toaster richColors theme={theme === 'dark' ? "dark" : 'light'} />
             <div className="flex justify-between items-center">
                 <AppLogo />
                 <span className="text-xl font-inter">Access your boards.</span>
