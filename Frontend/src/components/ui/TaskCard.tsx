@@ -1,6 +1,6 @@
 import type React from 'react'
 import { cn, toLocalDateOnly } from '@/lib/utils'
-import type { taskType } from '@/types'
+import type { editTaskType, taskType } from '@/types'
 import {
     Card,
     CardDescription,
@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react'
 import useTaskFeatures from '@/hooks/useTaskFeatures'
 import { useParams } from 'react-router-dom'
 import { toast } from 'sonner'
+import EditTaskDialogBoxes from './EditTaskDialogBoxes'
 
 const TaskCard = ({ task, className, style }: { task: taskType, className?: string, style?: React.CSSProperties }) => {
     const { boardId } = useParams()
@@ -26,6 +27,8 @@ const TaskCard = ({ task, className, style }: { task: taskType, className?: stri
     const { setTasks, deleteTaskOnServer } = useTaskFeatures()
     const [deletingTask, setDeletingTask] = useState(false)
     const [isDeleteAlertDialogOpen, setIsDeleteAlertDialogOpen] = useState(false)
+    const [editTaskAction, setEditTaskAction] = useState<editTaskType['actions']>('none')
+
 
     // delete task
     const handleDeleteTask = () => {
@@ -60,7 +63,7 @@ const TaskCard = ({ task, className, style }: { task: taskType, className?: stri
         )} style={style}>
             {/* badges */}
             <div className='-mt-2 w-full flex justify-end items-center gap-1'>
-                {task.assignedTo._id === user?._id && <>
+                {task?.assignedTo?._id === user?._id && <>
                     <Tooltip>
                         <TooltipTrigger>
                             <Badge className='bg-green-300'>For you</Badge>
@@ -92,10 +95,14 @@ const TaskCard = ({ task, className, style }: { task: taskType, className?: stri
                         </TooltipContent>
                     </Tooltip>
                 </>}
-                <TaskOptionDropdown deletingTask={deletingTask} setIsDeleteAlertDialogOpen={setIsDeleteAlertDialogOpen} task={task} />
+                {/* task options */}
+                <TaskOptionDropdown deletingTask={deletingTask} setEditTaskAction={setEditTaskAction} setIsDeleteAlertDialogOpen={setIsDeleteAlertDialogOpen} task={task} />
 
                 {/* Delete task alert dialog box popup */}
-                <AlertDialogPopup data-no-drag open={isDeleteAlertDialogOpen} onOpenChange={setIsDeleteAlertDialogOpen} alertTitle='Are you absolutely sure?' alertDescription='This action cannot be undone. This will permanently delete this task.' continueVerient='Destructive' continueBtnText='Delete' onContinue={handleDeleteTask}/>
+                <AlertDialogPopup data-no-drag open={isDeleteAlertDialogOpen} onOpenChange={setIsDeleteAlertDialogOpen} alertTitle='Are you absolutely sure?' alertDescription='This action cannot be undone. This will permanently delete this task.' continueVerient='Destructive' continueBtnText='Delete' onContinue={handleDeleteTask} />
+
+                {/* Dialog boxes for edit task */}
+                <EditTaskDialogBoxes setEditTaskAction={setEditTaskAction} task={task} action={editTaskAction}/>
             </div>
             {/* title */}
             <CardTitle className='w-full'>
@@ -110,10 +117,10 @@ const TaskCard = ({ task, className, style }: { task: taskType, className?: stri
                 <Tooltip>
                     <TooltipTrigger>
                         <span className='text-[13px]'>Assigned to: </span>
-                        <span className='text-[15px]'>{task.assignedTo.name}</span>
+                        <span className='text-[15px]'>{task?.assignedTo?.name}</span>
                     </TooltipTrigger>
                     <TooltipContent>
-                        Assigned to {task.assignedTo._id === user?._id ? 'you.' : task.assignedTo.name}
+                        Assigned to {task?.assignedTo?._id === user?._id ? 'you.' : task?.assignedTo?.name}
                     </TooltipContent>
                 </Tooltip>
             </div>

@@ -2,11 +2,13 @@ import { useUserAuth } from '@/hooks/useUserAuth'
 import type { board, BoardContextType } from '@/types'
 import { createContext, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import BoardSocketStore from './BoardSocketStore'
 
 
 export const BoardContext = createContext<BoardContextType | undefined>(undefined)
 
 const BoardStore = ({ children }: { children: React.ReactNode }) => {
+    // const { boardId } = useParams()
     const { user, isAuthenticated } = useUserAuth()
     const [boards, setBoards] = useState<board[] | null>(null)
     const [isUserAdmin, setIsUserAdmin] = useState(false)
@@ -17,7 +19,6 @@ const BoardStore = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         if (activeBoard?.canEdit) {
             for (const e of activeBoard?.canEdit!) {
-                console.log(e)
                 if (e._id === user?._id) {
                     setIsUserAdmin(true)
                     break;
@@ -57,7 +58,9 @@ const BoardStore = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <BoardContext.Provider value={{ boards, isUserAdmin, boardLoading, activeBoard, setActiveBoard }}>
-            {children}
+            <BoardSocketStore>
+                {children}
+            </BoardSocketStore>
         </BoardContext.Provider>
     )
 }

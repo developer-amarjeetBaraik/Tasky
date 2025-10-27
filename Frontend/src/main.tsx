@@ -13,6 +13,8 @@ import BoardStore from './stores/BoardStore.tsx'
 import BoardPage from './layouts/BoardPage.tsx'
 import TaskStore from './stores/TaskStore.tsx'
 import { Toaster } from 'sonner'
+import SocketStore from './stores/BoardSocketStore.tsx'
+import ChatRoom from './components/ChatSocket.tsx'
 
 const router = createBrowserRouter([
   {
@@ -40,6 +42,10 @@ const router = createBrowserRouter([
     </AuthProtectedRoutes>
   },
   {
+    path: '/chat',
+    element: <ChatRoom room='fiajsdifjiasdf' username='faishdifhasd' />
+  },
+  {
     path: '/board/:boardId',
     element: <AuthProtectedRoutes>
       <BoardStore>
@@ -61,8 +67,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
       <UserAuthStore>
-        <Toaster />
-        <RouterProvider router={router} />
+        <SocketStore>
+          <Toaster />
+          <RouterProvider router={router} />
+        </SocketStore>
       </UserAuthStore>
     </ThemeProvider>
   </StrictMode>

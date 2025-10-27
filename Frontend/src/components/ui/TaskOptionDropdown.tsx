@@ -1,4 +1,5 @@
-import { useState, type Dispatch, type SetStateAction } from 'react'
+import { type Dispatch, type SetStateAction } from 'react'
+import AiIcon from '../../assets/AI.svg'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,7 +13,7 @@ import {
     DropdownMenuTrigger
 } from './dropdown-menu'
 import OptionBtn from './OptionBtn'
-import type { taskType } from '@/types'
+import type { editTaskType, taskType } from '@/types'
 import useTaskFeatures from '@/hooks/useTaskFeatures'
 import { useParams } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -20,12 +21,11 @@ import { useBoardFeatures } from '@/hooks/useBoardFeatures'
 import { useUserAuth } from '@/hooks/useUserAuth'
 import SmallSpinner from './SmallSpinner'
 
-const TaskOptionDropdown = ({ task, setIsDeleteAlertDialogOpen, deletingTask }: { task: taskType, setIsDeleteAlertDialogOpen: Dispatch<SetStateAction<boolean>>, deletingTask: boolean }) => {
+const TaskOptionDropdown = ({ task, setIsDeleteAlertDialogOpen, setEditTaskAction, deletingTask }: { task: taskType, setEditTaskAction: Dispatch<SetStateAction<editTaskType['actions']>>, setIsDeleteAlertDialogOpen: Dispatch<SetStateAction<boolean>>, deletingTask: boolean }) => {
     const { boardId } = useParams()
     const { user } = useUserAuth()
     const { isUserAdmin } = useBoardFeatures()
     const { setTasks, changePriorityOnServer, fetchAllTasks } = useTaskFeatures()
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
     const priorityList = ['High', 'Medium', 'Low']
 
@@ -58,17 +58,29 @@ const TaskOptionDropdown = ({ task, setIsDeleteAlertDialogOpen, deletingTask }: 
     }
 
     return (<>
-        <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+        <DropdownMenu>
             <DropdownMenuTrigger>
                 <OptionBtn />
             </DropdownMenuTrigger>
             <DropdownMenuContent data-no-drag className='min-w-50' align='end'>
+                {/* Ask AI */}
+                <DropdownMenuItem onSelect={() => setEditTaskAction('change-title')}>
+                    <span className='w-full flex justify-between items-center'>
+                        <img src={AiIcon} alt="" className='h-7' />
+                        Ask AI
+                    </span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuLabel>Edit Task</DropdownMenuLabel>
                 {
                     isUserAdmin || task.createdBy._id === user?._id ? <DropdownMenuGroup>
                         {/* Change title */}
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setEditTaskAction('change-title')}>
                             Change Title
+                        </DropdownMenuItem>
+                        {/* Change description */}
+                        <DropdownMenuItem onSelect={() => setEditTaskAction('change-description')}>
+                            Change Description
                         </DropdownMenuItem>
                         {/* Change priority */}
                         <DropdownMenuSub>
@@ -87,7 +99,13 @@ const TaskOptionDropdown = ({ task, setIsDeleteAlertDialogOpen, deletingTask }: 
                                 ))}
                             </DropdownMenuSubContent>
                         </DropdownMenuSub>
-                        
+                        {/* Assign someone */}
+                        {
+                            isUserAdmin && <DropdownMenuItem onSelect={() => setEditTaskAction('assign-someone')}>
+                                Assign Someone
+                            </DropdownMenuItem>
+                        }
+
                         <DropdownMenuSeparator />
                         {/* Delete task */}
                         <DropdownMenuItem

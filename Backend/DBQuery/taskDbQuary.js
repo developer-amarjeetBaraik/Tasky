@@ -39,6 +39,17 @@ const userLookupWithAbstractionAndReplace = (localField) => {
     ]
 }
 
+// find task by id with user ref populate
+export const findTaskByTaskId = async (taskId) => {
+    if (!taskId) throw new DevError("taskId can't be undefined.")
+    try {
+        const task = await Task.findById(taskId).populate('assignedTo createdBy lastEditedBy', User.getSafeProjection());
+        return task
+    } catch (error) {
+        throw new DevError(error)
+    }
+}
+
 export const createTask = async (boardId, userId, title, description, priority, status) => {
     const isDuplicateTitle = await isTaskTitleDuplicateInBoard(title, boardId)
     if (isDuplicateTitle) throw new AppError(`Duplicate title. '${title}' titled task already exist in this board.`, 409)
@@ -61,18 +72,8 @@ export const createTask = async (boardId, userId, title, description, priority, 
             status: status,
         })
         newTask = await newTask.save()
-        newTask = await Task.findById(newTask._id).populate('assignedTo createdBy lastEditedBy', User.getSafeProjection());
+        newTask = await findTaskByTaskId(newTask._id)
         return newTask
-    } catch (error) {
-        throw new DevError(error)
-    }
-}
-
-export const findTaskByTaskId = async (taskId) => {
-    if (!taskId) throw new DevError("taskId can't be undefined.")
-    try {
-        const task = await Task.findById(taskId)
-        return task
     } catch (error) {
         throw new DevError(error)
     }
@@ -135,7 +136,7 @@ export const changeTaskStatus = async (taskId, newStatus, changeBy) => {
     if (!changeBy) throw new DevError("changeBy can't be null or undefined.")
 
     try {
-        const isStatusChanged = await Task.findByIdAndUpdate(taskId, { status: newStatus, lastEditedBy: changeBy, updatedAt: Date.now() }, { new: true })
+        const isStatusChanged = await Task.findByIdAndUpdate(taskId, { status: newStatus, lastEditedBy: changeBy, updatedAt: Date.now() }, { new: true }).populate('assignedTo createdBy lastEditedBy', User.getSafeProjection());
         if (isStatusChanged.status === newStatus) {
             return isStatusChanged
         }
@@ -150,7 +151,7 @@ export const changeTaskPriority = async (taskId, newPriority, changeBy) => {
     if (!changeBy) throw new DevError("changeBy can't be null or undefined.")
 
     try {
-        const isPriorityChanged = await Task.findByIdAndUpdate(taskId, { priority: newPriority, lastEditedBy: changeBy, updatedAt: Date.now() }, { new: true })
+        const isPriorityChanged = await Task.findByIdAndUpdate(taskId, { priority: newPriority, lastEditedBy: changeBy, updatedAt: Date.now() }, { new: true }).populate('assignedTo createdBy lastEditedBy', User.getSafeProjection());
         if (isPriorityChanged.priority === newPriority) {
             return isPriorityChanged
         }
@@ -165,7 +166,7 @@ export const changeTaskTitle = async (taskId, newTitle, changeBy) => {
     if (!changeBy) throw new DevError("changeBy can't be null or undefined.")
 
     try {
-        const isTitleChanged = await Task.findByIdAndUpdate(taskId, { title: newTitle, lastEditedBy: changeBy, updatedAt: Date.now() }, { new: true })
+        const isTitleChanged = await Task.findByIdAndUpdate(taskId, { title: newTitle, lastEditedBy: changeBy, updatedAt: Date.now() }, { new: true }).populate('assignedTo createdBy lastEditedBy', User.getSafeProjection());
         if (isTitleChanged.title === newTitle) {
             return isTitleChanged
         }
@@ -180,7 +181,7 @@ export const changeTaskDescription = async (taskId, newDescription, changeBy) =>
     if (!changeBy) throw new DevError("changeBy can't be null or undefined.")
 
     try {
-        const isDescriptionChanged = await Task.findByIdAndUpdate(taskId, { description: newDescription, lastEditedBy: changeBy, updatedAt: Date.now() }, { new: true })
+        const isDescriptionChanged = await Task.findByIdAndUpdate(taskId, { description: newDescription, lastEditedBy: changeBy, updatedAt: Date.now() }, { new: true }).populate('assignedTo createdBy lastEditedBy', User.getSafeProjection());
         if (isDescriptionChanged.description === newDescription) {
             return isDescriptionChanged
         }
@@ -195,7 +196,7 @@ export const changeTaskAssignedTo = async (taskId, newAssignedTo, changeBy) => {
     if (!changeBy) throw new DevError("changeBy can't be null or undefined.")
 
     try {
-        const isAssignedToChanged = await Task.findByIdAndUpdate(taskId, { assignedTo: newAssignedTo, lastEditedBy: changeBy, updatedAt: Date.now() }, { new: true })
+        const isAssignedToChanged = await Task.findByIdAndUpdate(taskId, { assignedTo: newAssignedTo, lastEditedBy: changeBy, updatedAt: Date.now() }, { new: true }).populate('assignedTo createdBy lastEditedBy', User.getSafeProjection());
 
         if (isAssignedToChanged.assignedTo.equals(newAssignedTo)) {
             return isAssignedToChanged
@@ -215,7 +216,7 @@ export const changeTaskPosition = async (boardId, taskId, inStatusGroup, desired
     try {
         await session.startTransaction()
         const newPosition = await getPositionForTaskInItsStatusGroup(inStatusGroup, boardId, desiredPosition, { session })
-        const isPositionChanged = await Task.findByIdAndUpdate(taskId, { position: newPosition, lastEditedBy: changeBy, updatedAt: Date.now() }, { new: true })
+        const isPositionChanged = await Task.findByIdAndUpdate(taskId, { position: newPosition, lastEditedBy: changeBy, updatedAt: Date.now() }, { new: true }).populate('assignedTo createdBy lastEditedBy', User.getSafeProjection());
         if (isPositionChanged.position === newPosition) {
             await session.commitTransaction()
             return isPositionChanged

@@ -9,6 +9,7 @@ import TaskCategoriesCards from "./ui/TaskCategoriesCards.tsx"
 import { useBoardFeatures } from "@/hooks/useBoardFeatures.tsx"
 import { Button } from "./ui/button.tsx"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip.tsx"
+import { Badge } from "./ui/badge.tsx"
 
 type kanbanBoardComponentType = {
     className?: string,
@@ -20,6 +21,7 @@ type kanbanBoardComponentType = {
 const KanbanBoard = ({ className, board, isSidebarCollapsed, setIsSidebarCollapsed }: kanbanBoardComponentType) => {
     const { boardId } = useParams()
     const { isAuthenticated, user } = useUserAuth()
+    const {totalLiveBoardUser} = useBoardFeatures()
     const { tasks, fetchAllTasks } = useTaskFeatures()
     const { activeBoard } = useBoardFeatures()
 
@@ -36,7 +38,8 @@ const KanbanBoard = ({ className, board, isSidebarCollapsed, setIsSidebarCollaps
             // "dark:bg-[linear-gradient(325deg,var(--tw-gradient-from),var(--tw-gradient-to))] from-[#d2a2c3] to-[#a093d6]",
             "bg-[url(https://d2k1ftgv7pobq7.cloudfront.net/images/backgrounds/gradients/rainbow.svg)]",
             className
-        )}>
+        )}
+        >
             {/* Header */}
             <div className="h-14 flex items-center justify-between p-4 border-b text-white bg-transparent-black">
                 <div className={cn(
@@ -56,7 +59,21 @@ const KanbanBoard = ({ className, board, isSidebarCollapsed, setIsSidebarCollaps
                     "header-right"
                 )}>
 
-                    <div className="flex gap-2.5">
+                    <div className="flex items-center gap-4">
+                        {/* Live connected user count */}
+                        <span className="relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ff0000" fill="none">
+                                <circle cx="12" cy="12" r="2" stroke="#ff0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></circle>
+                                <path d="M7.5 8C6.5 9 6 10.5 6 12C6 13.5 6.5 15 7.5 16" stroke="#ff0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M4.5 6C3 7.5 2 9.5 2 12C2 14.5 3 16.5 4.5 18" stroke="#ff0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M16.5 16C17.5 15 18 13.5 18 12C18 10.5 17.5 9 16.5 8" stroke="#ff0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M19.5 18C21 16.5 22 14.5 22 12C22 9.5 21 7.5 19.5 6" stroke="#ff0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                                <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center rounded-full text-xs">
+                                    {totalLiveBoardUser}
+                                </Badge>
+                        </span>
+
                         {/* Add task button */}
                         {
                             activeBoard?.admins?.some((item) => item._id === user?._id) && isSidebarCollapsed && setIsSidebarCollapsed &&
@@ -78,6 +95,7 @@ const KanbanBoard = ({ className, board, isSidebarCollapsed, setIsSidebarCollaps
                             </Tooltip>
 
                         }
+                        {/* User avatar icons */}
                         <UsersAvatarHorizontal users={board.canEdit!} displayLimit={2} />
                     </div>
                 </div>

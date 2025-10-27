@@ -8,8 +8,10 @@ import mongoose from 'mongoose'
 import errorHandler from './middlewares/errorHandler.js'
 import userAuthRoute from './routes/userAuthRoute.js'
 import boardRouter from './routes/boardRoute.js'
+import aiRouter from './routes/aiRoute.js'
 import authenticate from './middlewares/authenticate.js'
 import authenticateBoardMembership from './middlewares/authenticateBoardMembership.js'
+import setupSocket from './socket/index.js'
 
 const app = express()
 const server = createServer(app)
@@ -29,10 +31,14 @@ await mongoose.connect(process.env.MONGO_URL)
 // routes
 app.use('/auth', userAuthRoute)
 app.use('/board', authenticate, boardRouter)
+app.use('/ai', authenticate, aiRouter)
 
 app.get('/', (req, res) => {
     res.send({ message: 'Hello there.' })
 })
+
+// Socket.IO connection handler
+setupSocket(io)
 
 app.use(errorHandler)
 server.listen(PORT, () => {

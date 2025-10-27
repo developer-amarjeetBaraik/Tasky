@@ -2,6 +2,7 @@ import { useUserAuth } from '@/hooks/useUserAuth'
 import type { taskType, TaskContextType, callbackSuccessType, callbackErrorType } from '@/types'
 import React, { createContext, useEffect, useState, type ReactNode } from 'react'
 import useFormSchemas from '../schemas/useFormSchemas.tsx'
+import { z } from 'zod'
 import { toast } from 'sonner'
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined)
@@ -25,7 +26,6 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
             }).then(res => res.json())
                 .then(res => {
                     if (res.statusCode === 200) {
-                        console.log(res.tasks)
                         setTasks(res.tasks)
                     } else {
                         setTasks(null)
@@ -75,7 +75,7 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
             }
         }).then(res => res.json())
             .then(res => {
-                callback(null, {message:'Deleted successfully',res:res})
+                callback(null, { message: 'Deleted successfully', res: res })
             })
             .catch(err => {
                 callback({
@@ -123,8 +123,76 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
                 console.log(err)
             })
     }
+
+    // Change title
+    const changeTitleOnServer: TaskContextType['changeTitleOnServer'] = (boardId, taskId, oldTitle, newTitle, callback) => {
+        const isValidTitle = addTaskFormSchema.pick({ title: true }).safeParse({ 'title': newTitle })
+        if (!isValidTitle.success) {
+            return callback({ message: 'Invalid task title input.' }, null)
+        }
+
+        fetch(`/api/board/${boardId}/task/${taskId}/change-title?newTitle=${isValidTitle.data.title}`, {
+            method: 'PATCH',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(res => res.json())
+            .then(res => {
+                if (res.statusCode === 200) {
+                    return callback(null, { message: 'Task title changed sucessfully.', res })
+                }
+                callback({ message: res.message, res }, null)
+            }).catch(err => {
+                console.log(err)
+                callback({ message: 'Someting went wrong with task title change.' }, null)
+            })
+    }
+
+    const changeDescriptionOnServer: TaskContextType['changeDescriptionOnServer'] = (boardId, taskId, oldDescription, newDescription, callback) => {
+        const isValidDescription = addTaskFormSchema.pick({ description: true }).safeParse({ 'description': newDescription })
+        if (!isValidDescription.success) {
+            return callback({ message: 'Invalid task description input.' }, null)
+        }
+
+        fetch(`/api/board/${boardId}/task/${taskId}/change-description?newDescription=${isValidDescription.data.description}`, {
+            method: 'PATCH',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(res => res.json())
+            .then(res => {
+                if (res.statusCode === 200) {
+                    return callback(null, { message: 'Task description changed sucessfully.', res })
+                }
+                callback({ message: res.message, res }, null)
+            }).catch(err => {
+                console.log(err)
+                callback({ message: 'Someting went wrong with task description change.' }, null)
+            })
+    }
+
+
+    const assignSomeoneOnServer: TaskContextType['assignSomeoneOnServer'] = (boardId, taskId, assginTo, callback) => {
+        fetch(`/api/board/${boardId}/task/${taskId}/assign-to?assignTo=${assginTo}`, {
+            method: 'PATCH',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(res => res.json())
+            .then(res => {
+                console.log(res)
+                if (res.statusCode === 200) {
+                    return callback(null, { message: 'Task assigned to someone sucessfully.', res })
+                }
+                callback({ message: res.message, res }, null)
+            }).catch(err => {
+                console.log(err)
+                callback({ message: 'Someting went wrong with assigning task to somesome.' }, null)
+            })
+    }
+
     return (
-        <TaskContext.Provider value={{ tasks, setTasks, taskLoading, fetchAllTasks, addTaskOnServer, deleteTaskOnServer, changeStatusOnServer, changePriorityOnServer }}>
+        <TaskContext.Provider value={{ tasks, setTasks, taskLoading, fetchAllTasks, addTaskOnServer, deleteTaskOnServer, changeStatusOnServer, changePriorityOnServer, changeTitleOnServer, changeDescriptionOnServer, assignSomeoneOnServer }}>
             {children}
         </TaskContext.Provider>
     )

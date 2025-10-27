@@ -11,10 +11,10 @@ const taskSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    boardId:{
-        type:Schema.Types.ObjectId,
-        ref:'Board',
-        require:true,
+    boardId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Board',
+        require: true,
     },
     status: {
         type: String,
@@ -28,7 +28,10 @@ const taskSchema = new mongoose.Schema({
     assignedTo: {
         type: Schema.Types.ObjectId,
         ref: User,
-        require:true,
+        require: true,
+    },
+    dueDate: {
+        type: Date
     },
     createdBy: {
         type: Schema.Types.ObjectId,
@@ -70,11 +73,11 @@ const taskSchema = new mongoose.Schema({
             description: String,
             timestamp: Date,
         },
-        resolvedBy:Schema.Types.ObjectId
+        resolvedBy: Schema.Types.ObjectId
     }
 })
 
-const Task = mongoose.model('Task',taskSchema)
+const Task = mongoose.model('Task', taskSchema)
 
 export default Task
 

@@ -14,6 +14,7 @@ export type UserAuthContextType = {
 // type - board context
 export type BoardContextType = {
     isUserAdmin: boolean
+    // boardId:string | undefined
     boards: board[] | null
     boardLoading: boolean,
     activeBoard: board | null
@@ -30,6 +31,23 @@ export type TaskContextType = {
     changeStatusOnServer: (boardId: string | undefined, taskId: string, oldStatus: string, newStatus: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
     changePriorityOnServer: (boardId: string | undefined, taskId: string, newPriority: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
     deleteTaskOnServer: (boardId: string | undefined, taskId: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
+    changeTitleOnServer: (boardId: string | undefined, taskId: string, oldTitle: string, newTitle: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
+    changeDescriptionOnServer: (boardId: string | undefined, taskId: string, oldDescription: string, newDescription: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
+    assignSomeoneOnServer: (boardId: string | undefined, taskId: string, assignTo: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
+}
+
+export type BoardSocketContextType = {
+    isConnectedToBoradSocket: Boolean
+    joinBoardRoom: (boardId: string) => void
+    totalLiveBoardUser: number | undefined
+}
+
+export type TaskSocketContextType = {
+    
+}
+
+export type editTaskType = {
+    actions: 'none' | 'change-title' | 'change-description' | 'change-priority' | 'change-status' | 'assign-someone'
 }
 
 // type - user type
@@ -78,6 +96,7 @@ export type callbackSuccessType = {
 // type - error callback type
 export type callbackErrorType = {
     message: string,
+    res?: any,
     error?: Error,
     metaData?: any,
 }
@@ -101,13 +120,27 @@ export type board = {
 
 export interface AlertDialogPopupType {
     open?: boolean;
-      onOpenChange?: (open: boolean) => void;
-      alertTitle: React.ReactNode;
-      alertDescription?: React.ReactNode;
-      onCancel?: () => void;
-      onContinue?: () => void;
-      cancelBtnText?: string;
-      continueBtnText?: string;
-      continueVerient?: "Default" | "Destructive";
-      children?: React.ReactNode; // trigger
+    onOpenChange?: (open: boolean) => void;
+    alertTitle: React.ReactNode;
+    alertDescription?: React.ReactNode;
+    onCancel?: () => void;
+    onContinue?: () => void;
+    cancelBtnText?: string;
+    continueBtnText?: string;
+    continueVerient?: "Default" | "Destructive";
+    children?: React.ReactNode; // trigger
+}
+
+export interface CustomDialogType {
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    title: string
+    description: string
+    trigger?: React.ReactNode
+    onContinue?: () => void
+    disableContinueBtn?: boolean
+    continueLoadingState?: boolean
+    continueBtnText?: string
+    continueVerient?: "Default" | "Destructive";
+    children?: React.ReactNode;
 }

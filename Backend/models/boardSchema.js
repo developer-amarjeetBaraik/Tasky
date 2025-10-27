@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import ActivityLog from "./activityLogSchema.js";
 import User from "./userSchema.js";
 
 const boardSchema = new mongoose.Schema({

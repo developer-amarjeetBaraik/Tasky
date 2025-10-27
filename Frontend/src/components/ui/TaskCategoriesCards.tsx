@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom'
 import type { TaskContextType, taskType } from '@/types'
-import { DndContext, DragOverlay, type DragEndEvent, type DragMoveEvent, type DragOverEvent, type DragStartEvent, type UniqueIdentifier } from '@dnd-kit/core'
+import { DndContext, DragOverlay, useSensor, useSensors, PointerSensor, type DragEndEvent, type DragMoveEvent, type DragOverEvent, type DragStartEvent, type UniqueIdentifier } from '@dnd-kit/core'
 import TaskCard from './TaskCard'
 import DraggableItem from '@/helpers/DraggableItem'
 import DroppablePlace from '@/helpers/DroppablePlace'
@@ -17,6 +17,10 @@ const TaskCategoriesCards = ({ tasks }: { tasks: TaskContextType['tasks'] }) => 
     const [isDraggingId, setIsDraggingId] = useState<UniqueIdentifier | null>(null)
     const [dragActiveTask, setDragActiveTask] = useState<taskType | null>(null)
     const [dropDisabled, setDropDisabled] = useState<boolean>(false)
+
+    const dndSensors = useSensors(
+        useSensor(PointerSensor)
+    )
 
     // Drag start handler
     function handleDragStart(event: DragStartEvent) {
@@ -93,6 +97,7 @@ const TaskCategoriesCards = ({ tasks }: { tasks: TaskContextType['tasks'] }) => 
         taskLoading ? <LoadingSpinner className='w-full h-full' /> :
             /* Provided DndContext to use drag and drop functionality from dnd-kit */
             < DndContext
+                sensors={dndSensors}
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
                 onDragMove={handleDragMove}
