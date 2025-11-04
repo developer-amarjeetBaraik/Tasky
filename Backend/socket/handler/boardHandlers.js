@@ -1,7 +1,7 @@
 // Join specific board through board id
 export const handleJoinBoard = async (socket, namespace, data) => {
     const { boardId, userId } = data
-    console.log(`got request to join ${data.boardId} board.`)
+    // console.log(`got request to join ${data.boardId} board.`)
     try {
         await socket.join(boardId)
         socket.boardId = boardId
@@ -26,7 +26,7 @@ export const handleJoinBoard = async (socket, namespace, data) => {
 
 // Leave specific board through board id
 export const handleLeaveBoard = async (socket, namespace, data) => {
-    console.log('got request to leave board.')
+    // console.log('got request to leave board.')
     const { boardId, userId } = data
     try {
         await socket.leave(boardId)

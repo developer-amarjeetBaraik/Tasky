@@ -15,9 +15,6 @@ const useFormSchemas = () => {
 
     // refine the add task form schme with zod
     const addTaskFormSchema = baseAddTaskFromSchema.extend({
-        // title:z.string().refine(
-        //     (val) =>
-        // ),
         status: z.string().refine(
             (val) => activeBoard?.stages.includes(val),
             { message: "Task status must be one of the given list." }

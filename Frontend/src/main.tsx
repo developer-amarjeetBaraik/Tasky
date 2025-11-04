@@ -13,8 +13,10 @@ import BoardStore from './stores/BoardStore.tsx'
 import BoardPage from './layouts/BoardPage.tsx'
 import TaskStore from './stores/TaskStore.tsx'
 import { Toaster } from 'sonner'
-import SocketStore from './stores/BoardSocketStore.tsx'
+import BoardSocketStore from './stores/BoardSocketStore.tsx'
 import ChatRoom from './components/ChatSocket.tsx'
+import TaskSocketStore from './stores/TaskSocketStore.tsx'
+import TaskAiChatPage from './layouts/TaskAiChatPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -50,12 +52,26 @@ const router = createBrowserRouter([
     element: <AuthProtectedRoutes>
       <BoardStore>
         <CheckBoardMembership>
-          <TaskStore>
-            <BoardPage />
-          </TaskStore>
+          <TaskSocketStore>
+            <TaskStore>
+              <BoardPage />
+            </TaskStore>
+          </TaskSocketStore>
         </CheckBoardMembership>
       </BoardStore>
-    </AuthProtectedRoutes>
+    </AuthProtectedRoutes>,
+  },
+  {
+    path: '/task/:taskId/ai-assistant',
+    element: <AuthProtectedRoutes>
+      <BoardStore>
+          <TaskSocketStore>
+            <TaskStore>
+              <TaskAiChatPage />
+            </TaskStore>
+          </TaskSocketStore>
+      </BoardStore>
+    </AuthProtectedRoutes>,
   },
   {
     path: '*',
@@ -67,10 +83,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
       <UserAuthStore>
-        <SocketStore>
+        <BoardSocketStore>
           <Toaster />
           <RouterProvider router={router} />
-        </SocketStore>
+        </BoardSocketStore>
       </UserAuthStore>
     </ThemeProvider>
   </StrictMode>

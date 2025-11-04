@@ -1,20 +1,26 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenAI } from '@google/genai'
 import 'dotenv/config.js'
+import DevError from '../errors/devError.js';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" }); // or "gemini-1.5-pro"
+const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export const generateAIResponse = async (contents, onChunk) => {
+
+    // console.log(await genAI.models.list())
+
     try {
-        const streamingResult = await model.generateContentStream({contents})
+        const streamingResult = await genAI.models.generateContentStream({
+            model: 'gemini-2.0-flash-lite',
+            contents
+        })
 
         let finalText = "";
 
-        for await (const chunk of streamingResult){
-            const chunkText = chunk.text();
+        for await (const chunk of streamingResult) {
+            const chunkText = chunk.text;
             finalText += chunkText
 
-            if(onChunk) onChunk(chunkText)
+            if (onChunk) onChunk(chunkText)
         }
 
         return finalText

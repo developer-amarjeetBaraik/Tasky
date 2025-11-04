@@ -1,4 +1,4 @@
-import type { editTaskType, taskType, userObjectType } from '@/types'
+import type { taskOptionType, taskType, userObjectType } from '@/types'
 import React, { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react'
 import CustomDialog from './CustomDialog'
 import { Label } from './label'
@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import UserList from './UserList'
 
-const EditTaskDialogBoxes = ({ task, action, setEditTaskAction }: { task: taskType, action: editTaskType['actions'], setEditTaskAction: Dispatch<SetStateAction<editTaskType['actions']>> }) => {
+const TaskDialogBoxes = ({ task, action, setTaskOptionAction }: { task: taskType, action: taskOptionType['actions'], setTaskOptionAction: Dispatch<SetStateAction<taskOptionType['actions']>> }) => {
     const { boardId } = useParams()
     const { setTasks, changeTitleOnServer, changeDescriptionOnServer, assignSomeoneOnServer } = useTaskFeatures()
     const [isOpenDialogbox, setIsOpenDialogbox] = useState<boolean>(false)
@@ -25,9 +25,9 @@ const EditTaskDialogBoxes = ({ task, action, setEditTaskAction }: { task: taskTy
     const { validate: validateTaskTitle, error: titleValidationError } = useFieldValidationWithZod(addTaskFormSchema.pick({ title: true }), "title")
     const { validate: validateTaskDescription, error: descriptionValidationError } = useFieldValidationWithZod(addTaskFormSchema.pick({ description: true }), "description")
 
-    useEffect(()=>{
+    useEffect(() => {
         setSelectedUserToAssign(undefined)
-    },[isOpenDialogbox])
+    }, [isOpenDialogbox])
 
     useEffect(() => {
         if (action !== 'none') {
@@ -39,7 +39,7 @@ const EditTaskDialogBoxes = ({ task, action, setEditTaskAction }: { task: taskTy
 
     useEffect(() => {
         if (!isOpenDialogbox) {
-            setEditTaskAction("none")
+            setTaskOptionAction("none")
         }
     }, [isOpenDialogbox])
 
@@ -147,13 +147,13 @@ const EditTaskDialogBoxes = ({ task, action, setEditTaskAction }: { task: taskTy
     // handle assign someone
     const handleAssingSomeone = async () => {
         setSelectedUserToAssign(undefined)
-        
+
         // checking if the new assigned user is selected
         if (!selectedUserToAssign) return
-        
+
         // check if the user is already assigned to the same user
-        if(task?.assignedTo?._id === selectedUserToAssign?._id) return
-        
+        if (task?.assignedTo?._id === selectedUserToAssign?._id) return
+
         setAssignSomeoneOnServerLoading(true)
 
         try {
@@ -189,6 +189,11 @@ const EditTaskDialogBoxes = ({ task, action, setEditTaskAction }: { task: taskTy
 
     return (
         <>
+            {/* {
+                action === 'ask-task-ai' && <CustomDialog open={isOpenDialogbox} onOpenChange={setIsOpenDialogbox} title='Edit title' description='Change the title of the task. Click save when you are done.' continueBtnText='Save changes' onContinue={handleEditTitle} disableContinueBtn={titleValidationError.length > 0}>
+                    <TaskAiChatBox />
+                </CustomDialog>
+            } */}
             {
                 action === 'change-title' && <CustomDialog open={isOpenDialogbox} onOpenChange={setIsOpenDialogbox} title='Edit title' description='Change the title of the task. Click save when you are done.' continueBtnText='Save changes' onContinue={handleEditTitle} disableContinueBtn={titleValidationError.length > 0}>
                     <Label htmlFor='taskTitle'>Task title</Label>
@@ -219,4 +224,4 @@ const EditTaskDialogBoxes = ({ task, action, setEditTaskAction }: { task: taskTy
     )
 }
 
-export default EditTaskDialogBoxes
+export default TaskDialogBoxes

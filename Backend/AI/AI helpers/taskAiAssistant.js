@@ -2,7 +2,7 @@ import { getLatestTaskChats } from "../../DBQuery/AiTaskChatDbQuary.js"
 import summarisedTaskDetailByTaskId from "../../helper/summarisedTaskDetailByTaskId.js"
 import { generateAIResponse } from "../GeminiServices.js"
 
-export const taskAssistentReply = async (taskId, userPrompt) => {
+export const taskAssistentReply = async (taskId, userPrompt, onChunk) => {
     const systemPrompt = `You are Tasky AI — an intelligent assistant that helps users manage, understand, and complete their tasks efficiently. Always read task details first. Use the chat history to keep context. Answer concisely and provide actionable steps when needed.`
 
     const [taskDetails, latestChats] = await Promise.all([
@@ -46,9 +46,9 @@ export const taskAssistentReply = async (taskId, userPrompt) => {
         parts: [{ text: userPrompt }],
     });
 
-    // console.dir(contents, { depth: null })
-
-    const response = await generateAIResponse(contents)
+    const response = await generateAIResponse(contents, onChunk ? (chunk) => {
+        onChunk(chunk)
+    } : undefined)
 
     return response
 }

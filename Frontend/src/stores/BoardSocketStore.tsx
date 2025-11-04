@@ -1,7 +1,7 @@
-import type { BoardSocketContextType } from '@/types'
 import React, { createContext, useEffect, useState } from 'react'
 import { BoardSocket } from '@/sockets/namespace/boardSocket'
 import { useUserAuth } from '@/hooks/useUserAuth'
+import type { BoardSocketContextType } from '@/types.socket'
 
 export const BoardSocketContext = createContext<BoardSocketContextType | undefined>(undefined)
 
@@ -11,7 +11,7 @@ const BoardSocketStore = ({ children }: { children: React.ReactNode }) => {
     const [isConnectedToBoradSocket, setIsConnectedToBoradSocket] = useState(false)
     const [totalLiveBoardUser, setTotalLiveBoardUser] = useState(undefined)
 
-    // connect board namespace
+    // Socket events listeners
     useEffect(() => {
         // Connect board namespace
         BoardSocket.connect()
@@ -49,7 +49,7 @@ const BoardSocketStore = ({ children }: { children: React.ReactNode }) => {
     }, [])
 
     //Fn to join board room
-    const joinBoardRoom = (boardId: string) => {
+    const joinBoardRoom:BoardSocketContextType['joinBoardRoom'] = (boardId) => {
         BoardSocket.joinRoom({ boardId, userId: user?._id! })
     }
 

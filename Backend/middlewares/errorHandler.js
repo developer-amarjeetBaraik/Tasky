@@ -5,7 +5,7 @@ const errorHandler = (err, req, res, next) => {
     // Developer error (internal mistake)
     if (err instanceof DevError) {
         // console.error("🚨 Developer Error:", err.message);
-        console.error(err.stack);
+        // console.error(err.stack);
         return res.status(500).json({
             success: false,
             message: "Internal server error",

@@ -10,8 +10,10 @@ export const TaskContext = createContext<TaskContextType | undefined>(undefined)
 const TaskStore = ({ children }: { children: ReactNode }) => {
     const { isAuthenticated } = useUserAuth()
     const { addTaskFormSchema } = useFormSchemas()
+    const [activeTask, setActiveTask] = useState<TaskContextType['activeTask']>(null)
     const [tasks, setTasks] = useState<TaskContextType["tasks"] | null>(null)
     const [taskLoading, setTaskLoading] = useState<boolean>(true)
+    const [taskAiChatsLoading, setTaskAiChatsLoading] = useState<TaskContextType["taskAiChatsLoading"]>(true)
 
     // Fetch all tasks
     const fetchAllTasks: TaskContextType['fetchAllTasks'] = (boardId) => {
@@ -148,6 +150,7 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
             })
     }
 
+    // Change description
     const changeDescriptionOnServer: TaskContextType['changeDescriptionOnServer'] = (boardId, taskId, oldDescription, newDescription, callback) => {
         const isValidDescription = addTaskFormSchema.pick({ description: true }).safeParse({ 'description': newDescription })
         if (!isValidDescription.success) {
@@ -171,7 +174,7 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
             })
     }
 
-
+    // Change task assigned
     const assignSomeoneOnServer: TaskContextType['assignSomeoneOnServer'] = (boardId, taskId, assginTo, callback) => {
         fetch(`/api/board/${boardId}/task/${taskId}/assign-to?assignTo=${assginTo}`, {
             method: 'PATCH',
@@ -191,8 +194,39 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
             })
     }
 
+    // Get task Ai chats
+    const fetchTaskAiChat: TaskContextType['fetchTaskAiChat'] = (taskId, userId, callback) => {
+        setTaskAiChatsLoading(true)
+        try {
+            fetch(`/api/ai/task/ai-chats?taskId=${taskId}&userId=${userId}`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": 'application/json'
+                }
+            }).then(res => res.json())
+                .then(res => {
+                    console.log(res)
+                    setTaskAiChatsLoading(false)
+                    if (res.statusCode === 200) {
+                        callback(null, { task: res.task, chats: res.chats })
+                    } else {
+                        callback({ res, message: "Something went wrong." }, null)
+                    }
+                })
+                .catch(err => {
+                    setTaskAiChatsLoading(false)
+                    console.log(err)
+                    callback({ message: "Something went wrong." }, null)
+                })
+        } catch (error) {
+            setTaskAiChatsLoading(false)
+            console.log(error)
+            callback({ message: "Something went wrong." }, null)
+        }
+    }
+
     return (
-        <TaskContext.Provider value={{ tasks, setTasks, taskLoading, fetchAllTasks, addTaskOnServer, deleteTaskOnServer, changeStatusOnServer, changePriorityOnServer, changeTitleOnServer, changeDescriptionOnServer, assignSomeoneOnServer }}>
+        <TaskContext.Provider value={{ activeTask, setActiveTask, tasks, setTasks, taskLoading, fetchAllTasks, addTaskOnServer, deleteTaskOnServer, changeStatusOnServer, changePriorityOnServer, changeTitleOnServer, changeDescriptionOnServer, assignSomeoneOnServer, taskAiChatsLoading, fetchTaskAiChat }}>
             {children}
         </TaskContext.Provider>
     )

@@ -23,6 +23,8 @@ export type BoardContextType = {
 
 // type - task context
 export type TaskContextType = {
+    activeTask: taskType | null
+    setActiveTask: React.Dispatch<React.SetStateAction<TaskContextType['activeTask']>>
     tasks: { [key: string]: taskType[] | null } | null
     setTasks: React.Dispatch<React.SetStateAction<TaskContextType['tasks']>>
     taskLoading: boolean,
@@ -34,20 +36,12 @@ export type TaskContextType = {
     changeTitleOnServer: (boardId: string | undefined, taskId: string, oldTitle: string, newTitle: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
     changeDescriptionOnServer: (boardId: string | undefined, taskId: string, oldDescription: string, newDescription: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
     assignSomeoneOnServer: (boardId: string | undefined, taskId: string, assignTo: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
+    taskAiChatsLoading: boolean
+    fetchTaskAiChat: (taskId: string, userId: string, callback: (error: callbackErrorType | null, success: {task:taskType,chats:[]} | null) => void) => void
 }
 
-export type BoardSocketContextType = {
-    isConnectedToBoradSocket: Boolean
-    joinBoardRoom: (boardId: string) => void
-    totalLiveBoardUser: number | undefined
-}
-
-export type TaskSocketContextType = {
-    
-}
-
-export type editTaskType = {
-    actions: 'none' | 'change-title' | 'change-description' | 'change-priority' | 'change-status' | 'assign-someone'
+export type taskOptionType = {
+    actions: 'none' | 'change-title' | 'change-description' | 'change-priority' | 'change-status' | 'assign-someone' | 'ask-task-ai'
 }
 
 // type - user type

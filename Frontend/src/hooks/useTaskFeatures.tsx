@@ -1,10 +1,13 @@
+import { TaskSocketContext } from '@/stores/TaskSocketStore'
 import { TaskContext } from '@/stores/TaskStore'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
 const useTaskFeatures = () => {
-    const context = useContext(TaskContext)
-    if (context === undefined) throw new Error("useTaskFeatures must be used within a TaskStore.")
-    return context
+    const taskCtx = useContext(TaskContext)
+    const TaskSocketCtx = useContext(TaskSocketContext)
+    if (taskCtx === undefined) throw new Error("useTaskFeatures must be used within a TaskStore.")
+    if (TaskSocketCtx === undefined) throw new Error("useTaskFeatures must be used within a TaskSocketStore.")
+    return { ...taskCtx, ...TaskSocketCtx }
 }
 
 export default useTaskFeatures

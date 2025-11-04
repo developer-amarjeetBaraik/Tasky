@@ -19,7 +19,7 @@ const aiChatForTaskSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'assistant', 'admin'],
+    enum: ['user', 'assistant'],
     required: true,
   },
   message: {

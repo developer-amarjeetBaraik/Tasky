@@ -1,3 +1,4 @@
+import DevError from "../errors/devError.js";
 import AiChatForTask from "../models/AiChatForTaskSchema.js";
 
 /**
@@ -20,7 +21,6 @@ export async function getLatestTaskChats(taskId, limit = 5, skip = 0) {
     // Reverse so results are oldest → newest (for proper display order)
     return chats.reverse();
   } catch (error) {
-    console.error('Error fetching paginated task chats:', error);
-    throw new Error('Failed to retrieve chat messages');
+    throw new DevError('Failed to retrieve chat messages');
   }
 }

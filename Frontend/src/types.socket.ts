@@ -19,3 +19,13 @@ export interface JoinBoardPayload {
   boardId: string;
   userId: string;
 }
+
+export type BoardSocketContextType = {
+    isConnectedToBoradSocket: Boolean
+    joinBoardRoom: (boardId: string) => void
+    totalLiveBoardUser: number | undefined
+}
+
+export type TaskSocketContextType = {
+    askTaskAi: (taskId:string, prompt:string) => void
+}
