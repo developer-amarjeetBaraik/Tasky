@@ -16,7 +16,7 @@ import setupSocket from './socket/index.js'
 const app = express()
 const server = createServer(app)
 export const io = new Server(server, {
-    cors: { origin: '*', methods: ['GET', 'POST'],credentials:true }
+    cors: { origin: '*', methods: ['GET', 'POST'], credentials: true }
 })
 const PORT = process.env.PORT
 

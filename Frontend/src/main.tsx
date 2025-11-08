@@ -14,7 +14,6 @@ import BoardPage from './layouts/BoardPage.tsx'
 import TaskStore from './stores/TaskStore.tsx'
 import { Toaster } from 'sonner'
 import BoardSocketStore from './stores/BoardSocketStore.tsx'
-import ChatRoom from './components/ChatSocket.tsx'
 import TaskSocketStore from './stores/TaskSocketStore.tsx'
 import TaskAiChatPage from './layouts/TaskAiChatPage.tsx'
 
@@ -42,10 +41,6 @@ const router = createBrowserRouter([
         <Dashboard />
       </BoardStore>
     </AuthProtectedRoutes>
-  },
-  {
-    path: '/chat',
-    element: <ChatRoom room='fiajsdifjiasdf' username='faishdifhasd' />
   },
   {
     path: '/board/:boardId',
