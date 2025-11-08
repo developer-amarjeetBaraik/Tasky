@@ -1,7 +1,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import React, { cloneElement } from "react";
 
-function DroppablePlace({ id, dropDisabled, children }: { id: string, dropDisabled: boolean, children: React.ReactNode }) {
+function DroppablePlace({ id, children }: { id: string, children: React.ReactNode }) {
     const { setNodeRef } = useDroppable({
         id,
         disabled: false,
