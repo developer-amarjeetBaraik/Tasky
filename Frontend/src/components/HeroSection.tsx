@@ -20,7 +20,6 @@ const HeroSection = () => {
                 <h1 className="text-4xl md:text-7xl font-bold mb-6 leading-tight">
                     Organize Smarter. Work Faster. Achieve More.
                 </h1>
-
                 <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
                     Tasky helps you stay on top of your work with an intuitive, drag-and-drop task board designed for productivity. Create, prioritize, and track your tasks effortlessly — all in one clean interface.
                 </p>

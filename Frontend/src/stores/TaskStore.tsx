@@ -1,8 +1,7 @@
 import { useUserAuth } from '@/hooks/useUserAuth'
-import type { taskType, TaskContextType, callbackSuccessType, callbackErrorType } from '@/types'
-import React, { createContext, useEffect, useState, type ReactNode } from 'react'
+import type { TaskContextType } from '@/types'
+import { createContext, useState, type ReactNode } from 'react'
 import useFormSchemas from '../schemas/useFormSchemas.tsx'
-import { z } from 'zod'
 import { toast } from 'sonner'
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined)
@@ -135,7 +134,7 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
             return callback({ message: 'Invalid task title input.' }, null)
         }
 
-        fetch(`/api/board/${boardId}/task/${taskId}/change-title?newTitle=${isValidTitle.data.title}`, {
+        fetch(`/api/board/${boardId}/task/${taskId}/change-title?newTitle=${isValidTitle.data.title}&oldTilte=${oldTitle}`, {
             method: 'PATCH',
             headers: {
                 "Content-Type": "application/json"
@@ -159,7 +158,7 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
             return callback({ message: 'Invalid task description input.' }, null)
         }
 
-        fetch(`/api/board/${boardId}/task/${taskId}/change-description?newDescription=${isValidDescription.data.description}`, {
+        fetch(`/api/board/${boardId}/task/${taskId}/change-description?newDescription=${isValidDescription.data.description}&oldDescription=${oldDescription}`, {
             method: 'PATCH',
             headers: {
                 "Content-Type": "application/json"

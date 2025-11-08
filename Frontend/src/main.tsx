@@ -1,4 +1,4 @@
-import ReactDOM, { createRoot } from 'react-dom/client'
+import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ThemeProvider } from './components/ui/theme-provider'
 import { StrictMode } from 'react'

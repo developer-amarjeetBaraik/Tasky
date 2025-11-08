@@ -20,7 +20,6 @@ import { toast } from 'sonner'
 import { useBoardFeatures } from '@/hooks/useBoardFeatures'
 import { useUserAuth } from '@/hooks/useUserAuth'
 import SmallSpinner from './SmallSpinner'
-import TaskAiChatBox from '../TaskAiChatBox'
 
 const TaskOptionDropdown = ({ task, setIsDeleteAlertDialogOpen, setTaskOptionAction, deletingTask }: { task: taskType, setTaskOptionAction: Dispatch<SetStateAction<taskOptionType['actions']>>, setIsDeleteAlertDialogOpen: Dispatch<SetStateAction<boolean>>, deletingTask: boolean }) => {
     const { boardId } = useParams()
@@ -48,7 +47,7 @@ const TaskOptionDropdown = ({ task, setIsDeleteAlertDialogOpen, setTaskOptionAct
                 [task?.status]: [taskToChange, ...statusGroup.filter(t => t._id !== task?._id)],
             };
         });
-        changePriorityOnServer(boardId, task?._id, priority, (error, success) => {
+        changePriorityOnServer(boardId, task?._id, priority, (error) => {
             if (error) {
                 fetchAllTasks(boardId!)
                 toast.error(`${error.message}`, {

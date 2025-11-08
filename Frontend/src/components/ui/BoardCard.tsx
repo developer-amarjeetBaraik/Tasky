@@ -3,7 +3,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -11,7 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils' // shadcn utility function
 import { useUserAuth } from '@/hooks/useUserAuth'
-import { useTheme } from "./theme-provider"
 import { Button } from "./button"
 import { useNavigate } from "react-router-dom"
 import OptionBtn from "./OptionBtn"

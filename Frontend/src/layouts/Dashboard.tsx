@@ -4,13 +4,10 @@ import ProfileMenu from "@/components/ui/ProfileMenu"
 import { BoardCard } from "@/components/ui/BoardCard"
 import { useNavigate } from "react-router-dom"
 import { useBoardFeatures } from "@/hooks/useBoardFeatures"
-import { useTheme } from "@/components/ui/theme-provider"
 import LoadingSpinner from "@/components/ui/LoadingSpinner"
-import TextLogoConstructor from "@/components/ui/TextLogoConstructor"
 
 const Dashboard = () => {
     const navigate = useNavigate()
-    const { theme } = useTheme()
     const { boardLoading, boards } = useBoardFeatures()
     return (
         <div className="w-full h-full min-h-screen flex flex-col">

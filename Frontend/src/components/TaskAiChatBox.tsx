@@ -1,13 +1,13 @@
 import useTaskFeatures from '@/hooks/useTaskFeatures'
 import { useUserAuth } from '@/hooks/useUserAuth'
-import { useEffect, useRef, useState, type Ref } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import LoadingSpinner from './ui/LoadingSpinner'
 import { Button } from './ui/button'
 import ChatMessageComponent from './ui/ChatMessageComponent'
 
 const TaskAiChatBox = () => {
-    const { taskAiChatsLoading, fetchTaskAiChat, activatedAiTask, setActivatedAiTask, aiTaskChats, setAiTaskChats, askTaskAi } = useTaskFeatures()
+    const { taskAiChatsLoading, fetchTaskAiChat, setActivatedAiTask, aiTaskChats, setAiTaskChats, askTaskAi } = useTaskFeatures()
     const { user } = useUserAuth()
     const { taskId } = useParams()
     const chatInputRef = useRef<HTMLInputElement>(null)

@@ -15,7 +15,7 @@ import {
 import { useUserAuth } from '@/hooks/useUserAuth'
 import TaskOptionDropdown from './TaskOptionDropdown'
 import AlertDialogPopup from './AlertDialogPopup'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import useTaskFeatures from '@/hooks/useTaskFeatures'
 import { useParams } from 'react-router-dom'
 import { toast } from 'sonner'

@@ -1,17 +1,12 @@
 import { NavLink } from 'react-router-dom'
 import {
   NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-  NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ModeToggle } from './ui/mode-toggle';
 import { Button } from './ui/button'
 import AppLogo from './ui/AppLogo'
@@ -35,7 +30,7 @@ const navigationLinks: { name: string, path: string }[] = [
 ]
 
 const Navbar = () => {
-  const { user, isAuthenticated, authLoading } = useUserAuth()
+  const { isAuthenticated, authLoading } = useUserAuth()
   return (
     <nav className='w-full flex justify-between items-center'>
       {/* App logo */}
@@ -74,6 +69,8 @@ const Navbar = () => {
             <NavLink to='/dashboard'><Button>Dashboard</Button></NavLink>
             {/* User avatar */}
             <ProfileMenu/>
+
+
           </div> : <>
             {/* User auth links */}
             <span className='flex justify-center items-center gap-2.5'>

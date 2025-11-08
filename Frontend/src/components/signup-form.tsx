@@ -7,8 +7,7 @@ import { NavLink, useNavigate } from "react-router-dom"
 import AppLogo from "./ui/AppLogo"
 import { useRef } from "react"
 import { useUserAuth } from "@/hooks/useUserAuth"
-import { useTheme } from "./ui/theme-provider"
-import { toast, Toaster } from "sonner"
+import { toast } from "sonner"
 import type { CustomError } from "@/types"
 
 export function SignupForm({
@@ -19,7 +18,6 @@ export function SignupForm({
   const emailRef = useRef<HTMLInputElement | null>(null)
   const passwordRef = useRef<HTMLInputElement | null>(null)
   const { signup } = useUserAuth()
-  const { theme } = useTheme()
   const navigate = useNavigate()
 
   // Signup form submit handler

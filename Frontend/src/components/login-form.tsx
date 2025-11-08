@@ -1,6 +1,5 @@
 import React, { useRef } from "react"
-import { Toaster, toast } from 'sonner'
-import { useTheme } from "./ui/theme-provider"
+import { toast } from 'sonner'
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -19,7 +18,6 @@ export function LoginForm({
   const emailRef = useRef<HTMLInputElement | null>(null)
   const passwordRef = useRef<HTMLInputElement | null>(null)
   const { login } = useUserAuth()
-  const { theme } = useTheme()
   const navigate = useNavigate()
 
   //Login form submit handler

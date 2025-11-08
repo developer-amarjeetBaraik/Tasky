@@ -2,8 +2,6 @@ import TaskAiChatBox from '@/components/TaskAiChatBox'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import TaskCard from '@/components/ui/TaskCard'
 import useTaskFeatures from '@/hooks/useTaskFeatures'
-import type { taskType } from '@/types'
-import { useEffect, useState } from 'react'
 
 const TaskAiChatPage = () => {
     const { taskAiChatsLoading,activatedAiTask } = useTaskFeatures()
