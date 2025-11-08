@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react'
 import { NavLink } from 'react-router-dom';
 import heroImage from '../assets/react.svg'
+import { useRef } from 'react';
 
 
 const HeroSection = () => {
@@ -17,20 +17,6 @@ const HeroSection = () => {
                         ✨ Your productivity hub — simple, fast, and focused.
                     </span>
                 </div>
-
-                {/* <h1 className="text-4xl md:text-7xl font-bold mb-6 leading-tight">
-                    Where Creativity
-                    <br />
-                    Meets Clarity
-                    <br />
-                    Welcome to
-                    <span
-                        className="bg-linear-135 from-primary to-accent bg-gradient-to-r bg-clip-text text-transparent ml-4"
-                    >
-                        {getComputedStyle(root).getPropertyValue('--brand-name')}
-                    </span>
-                    .
-                </h1> */}
                 <h1 className="text-4xl md:text-7xl font-bold mb-6 leading-tight">
                     Organize Smarter. Work Faster. Achieve More.
                 </h1>
