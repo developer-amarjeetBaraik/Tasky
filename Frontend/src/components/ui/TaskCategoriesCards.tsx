@@ -109,7 +109,7 @@ const TaskCategoriesCards = ({ tasks }: { tasks: TaskContextType['tasks'] }) => 
                     {
                         (Object.entries(tasks!)).map((i) => (
                             // category card
-                            <DroppablePlace dropDisabled={dropDisabled} key={i[0]} id={i[0]}>
+                            <DroppablePlace key={i[0]} id={i[0]}>
                                 <div key={i[0]} className={cn(
                                     'p-1.5 max-h-full min-w-[270px] max-w-[280px] w-1/4 bg-[#F1F2F4] flex flex-col items-center gap-1.5 rounded-lg dark:bg-black',
                                 )}>
