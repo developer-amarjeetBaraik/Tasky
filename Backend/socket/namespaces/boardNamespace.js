@@ -1,7 +1,10 @@
+import authenticateSocket from "../../middlewares/authenticateSocket.js";
 import { handleJoinBoard, handleLeaveBoard } from "../handler/boardHandlers.js";
 
 export default function setupBoardNamespace(io) {
   const boardNamespace = io.of('/board');
+
+  boardNamespace.use(authenticateSocket)
 
   boardNamespace.on('connect', (socket) => {
 

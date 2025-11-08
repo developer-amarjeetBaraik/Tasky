@@ -1,22 +1,65 @@
-import React from 'react'
+import useTaskFeatures from '@/hooks/useTaskFeatures'
+import { useUserAuth } from '@/hooks/useUserAuth'
+import { useEffect, useRef, useState, type Ref } from 'react'
+import { useParams } from 'react-router-dom'
+import LoadingSpinner from './ui/LoadingSpinner'
+import { Button } from './ui/button'
+import ChatMessageComponent from './ui/ChatMessageComponent'
 
 const TaskAiChatBox = () => {
-    return (<>
+    const { taskAiChatsLoading, fetchTaskAiChat, activatedAiTask, setActivatedAiTask, aiTaskChats, setAiTaskChats, askTaskAi } = useTaskFeatures()
+    const { user } = useUserAuth()
+    const { taskId } = useParams()
+    const chatInputRef = useRef<HTMLInputElement>(null)
+    const [newMessage, setNewMessage] = useState<string | null>(null)
 
+    // Fetching task ai chats
+    useEffect(() => {
+        if (!taskId || !user) return
+        fetchTaskAiChat(taskId, user?._id, (error, success) => {
+            if (success) {
+                console.log(success)
+                setActivatedAiTask(success.task)
+                setAiTaskChats(success.chats)
+            } else {
+                console.log(error)
+            }
+        })
+    }, [])
+
+    const handleSendClick = () => {
+        if (!taskId || !newMessage || newMessage?.length < 3) return
+
+        askTaskAi(taskId, newMessage)
+    }
+
+    return (<>
         <h2 className="text-lg font-semibold mb-2">Task AI Assistant</h2>
-        <div className="flex-1 overflow-y-auto bg-gray-50 rounded-lg p-3">
+        <div className="flex-1 overflow-y-auto bg-gray-800 rounded-lg p-3 flex flex-col gap-2">
             {/* AI Chat messages go here */}
-            <p className="text-gray-600 text-sm">Chat messages appear here...</p>
+            {
+                !aiTaskChats || taskAiChatsLoading ? <LoadingSpinner /> : <>
+                    {
+                        aiTaskChats?.length < 1 ? <p className="text-gray-50 text-sm">There is no chats to display.</p> : <>
+                            {aiTaskChats.map(msg => {
+                                return <ChatMessageComponent key={msg._id} message={msg?.message} messageBy={msg?.role === "user" ? 'user' : 'other'} time={msg.createdAt} />
+                            })}
+                        </>
+                    }
+                </>
+            }
         </div>
         <div className="mt-3 flex items-center gap-2">
             <input
+                ref={chatInputRef}
+                onChange={() => setNewMessage(`${chatInputRef.current?.value}`)}
                 type="text"
-                placeholder="Type your message..."
+                placeholder="Type your newMessage..."
                 className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+            <Button disabled={!newMessage || newMessage?.length < 3} onClick={handleSendClick} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                 Send
-            </button>
+            </Button>
         </div>
     </>
     )

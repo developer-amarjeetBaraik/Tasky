@@ -1,7 +1,10 @@
+import authenticateSocket from "../../middlewares/authenticateSocket.js";
 import { handleTaskNewPrompt } from "../handler/taskAiHandlers.js";
 
 export default function setupTaskAiNamespace(io) {
     const taskAiNamespace = io.of('/task_ai');
+
+    taskAiNamespace.use(authenticateSocket)
 
     taskAiNamespace.on('connect', (socket) => {
         console.log(`User ${socket.id} connected to task ai`);

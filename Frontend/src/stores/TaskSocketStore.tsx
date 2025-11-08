@@ -22,14 +22,7 @@ const TaskSocketStore = ({ children }: { children: React.ReactNode }) => {
     const askTaskAi: TaskSocketContextType['askTaskAi'] = (taskId, prompt) => {
         console.log('askTaskAi invocked.')
         TaskAiSocket.newMessage({ taskId, prompt })
-    }
-
-    // useEffect(() => {
-    //     console.log('useEffect invocked.')
-    //     askTaskAi('68e7811200a9bbfdc9ab383e', 'i want to build this app.')
-    // }, [])
-
-    
+    }    
 
     return (
         <TaskSocketContext.Provider value={{ askTaskAi }}>

@@ -1,9 +1,10 @@
+import authenticate from "../middlewares/authenticate.js";
 import setupBoardNamespace from "./namespaces/boardNamespace.js";
 import setupTaskAiNamespace from "./namespaces/taskAiNamespace.js";
 
 export default function setupSocket(io) {
     // Apply global middleware
-    //   io.use(authMiddleware);
+      io.use(authenticate);
 
     // Setup default namespace
     io.on('connection', (socket) => {

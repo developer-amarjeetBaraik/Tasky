@@ -13,6 +13,8 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
     const [activeTask, setActiveTask] = useState<TaskContextType['activeTask']>(null)
     const [tasks, setTasks] = useState<TaskContextType["tasks"] | null>(null)
     const [taskLoading, setTaskLoading] = useState<boolean>(true)
+    const [activatedAiTask, setActivatedAiTask] = useState<TaskContextType['activatedAiTask']>()
+    const [aiTaskChats, setAiTaskChats] = useState<TaskContextType['aiTaskChats']>([])
     const [taskAiChatsLoading, setTaskAiChatsLoading] = useState<TaskContextType["taskAiChatsLoading"]>(true)
 
     // Fetch all tasks
@@ -205,7 +207,6 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
                 }
             }).then(res => res.json())
                 .then(res => {
-                    console.log(res)
                     setTaskAiChatsLoading(false)
                     if (res.statusCode === 200) {
                         callback(null, { task: res.task, chats: res.chats })
@@ -226,7 +227,7 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <TaskContext.Provider value={{ activeTask, setActiveTask, tasks, setTasks, taskLoading, fetchAllTasks, addTaskOnServer, deleteTaskOnServer, changeStatusOnServer, changePriorityOnServer, changeTitleOnServer, changeDescriptionOnServer, assignSomeoneOnServer, taskAiChatsLoading, fetchTaskAiChat }}>
+        <TaskContext.Provider value={{ activeTask, setActiveTask, tasks, setTasks, taskLoading, fetchAllTasks, addTaskOnServer, deleteTaskOnServer, changeStatusOnServer, changePriorityOnServer, changeTitleOnServer, changeDescriptionOnServer, assignSomeoneOnServer, taskAiChatsLoading, fetchTaskAiChat, activatedAiTask, setActivatedAiTask, aiTaskChats, setAiTaskChats }}>
             {children}
         </TaskContext.Provider>
     )

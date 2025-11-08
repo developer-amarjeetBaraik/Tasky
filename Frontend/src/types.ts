@@ -37,7 +37,11 @@ export type TaskContextType = {
     changeDescriptionOnServer: (boardId: string | undefined, taskId: string, oldDescription: string, newDescription: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
     assignSomeoneOnServer: (boardId: string | undefined, taskId: string, assignTo: string, callback: (error: callbackErrorType | null, success: callbackSuccessType | null) => void) => void
     taskAiChatsLoading: boolean
-    fetchTaskAiChat: (taskId: string, userId: string, callback: (error: callbackErrorType | null, success: {task:taskType,chats:[]} | null) => void) => void
+    fetchTaskAiChat: (taskId: string, userId: string, callback: (error: callbackErrorType | null, success: { task: taskType, chats: [] } | null) => void) => void
+    activatedAiTask: taskType | undefined
+    setActivatedAiTask: React.Dispatch<React.SetStateAction<TaskContextType['activatedAiTask']>>
+    aiTaskChats: { _id: string, userId: string, taskId: string, message: string, role: 'user' | 'other', createdAt: Date }[],
+    setAiTaskChats: React.Dispatch<React.SetStateAction<TaskContextType['aiTaskChats']>>
 }
 
 export type taskOptionType = {

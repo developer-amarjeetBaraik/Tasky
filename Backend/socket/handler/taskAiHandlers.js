@@ -1,10 +1,11 @@
 import mongoose from "mongoose"
 import { taskAssistentReply } from "../../AI/AI helpers/taskAiAssistant.js"
 import AiChatForTask from "../../models/AiChatForTaskSchema.js"
+import { io } from "../../app.js"
 
 export const handleTaskNewPrompt = async (socket, namespace, data) => {
     const { taskId, prompt } = data
-    const { _id } = res.user
+    const { _id } = socket.user
 
     const session = await mongoose.startSession()
 
