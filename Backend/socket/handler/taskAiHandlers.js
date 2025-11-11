@@ -10,6 +10,7 @@ export const handleTaskNewPrompt = async (socket, namespace, data) => {
     const session = await mongoose.startSession()
 
     try {
+        socket.emit('task_ai_thinking')
         session.startTransaction()
         const userNewPrompt = new AiChatForTask({
             taskId,
@@ -30,7 +31,7 @@ export const handleTaskNewPrompt = async (socket, namespace, data) => {
         const assistentNewReply = new AiChatForTask({
             taskId,
             userId: _id,
-            message: fullReply,
+            message: fullReply || "No reply generated",
             role: "assistant"
         })
 
@@ -46,5 +47,6 @@ export const handleTaskNewPrompt = async (socket, namespace, data) => {
         console.error('Task AI error', error)
     } finally {
         session.endSession()
+        socket.emit('task_ai_finished_thinking')
     }
 }

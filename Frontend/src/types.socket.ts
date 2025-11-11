@@ -21,11 +21,15 @@ export interface JoinBoardPayload {
 }
 
 export type BoardSocketContextType = {
-    isConnectedToBoradSocket: Boolean
-    joinBoardRoom: (boardId: string) => void
-    totalLiveBoardUser: number | undefined
+  isConnectedToBoradSocket: Boolean
+  joinBoardRoom: (boardId: string) => void
+  totalLiveBoardUser: number | undefined
 }
 
 export type TaskSocketContextType = {
-    askTaskAi: (taskId:string, prompt:string) => void
+  askTaskAi: (taskId: string, prompt: string) => void
+  taskAiThinking: boolean
+  taskAiChunkReply: string | undefined
+  aiTaskChats: { _id: string, userId: string, taskId: string, message: string, role: 'user' | 'other', createdAt: Date }[],
+  setAiTaskChats: React.Dispatch<React.SetStateAction<TaskSocketContextType['aiTaskChats']>>
 }

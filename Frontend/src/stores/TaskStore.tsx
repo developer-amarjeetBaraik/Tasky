@@ -13,7 +13,6 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
     const [tasks, setTasks] = useState<TaskContextType["tasks"] | null>(null)
     const [taskLoading, setTaskLoading] = useState<boolean>(true)
     const [activatedAiTask, setActivatedAiTask] = useState<TaskContextType['activatedAiTask']>()
-    const [aiTaskChats, setAiTaskChats] = useState<TaskContextType['aiTaskChats']>([])
     const [taskAiChatsLoading, setTaskAiChatsLoading] = useState<TaskContextType["taskAiChatsLoading"]>(true)
 
     // Fetch all tasks
@@ -226,7 +225,7 @@ const TaskStore = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <TaskContext.Provider value={{ activeTask, setActiveTask, tasks, setTasks, taskLoading, fetchAllTasks, addTaskOnServer, deleteTaskOnServer, changeStatusOnServer, changePriorityOnServer, changeTitleOnServer, changeDescriptionOnServer, assignSomeoneOnServer, taskAiChatsLoading, fetchTaskAiChat, activatedAiTask, setActivatedAiTask, aiTaskChats, setAiTaskChats }}>
+        <TaskContext.Provider value={{ activeTask, setActiveTask, tasks, setTasks, taskLoading, fetchAllTasks, addTaskOnServer, deleteTaskOnServer, changeStatusOnServer, changePriorityOnServer, changeTitleOnServer, changeDescriptionOnServer, assignSomeoneOnServer, taskAiChatsLoading, fetchTaskAiChat, activatedAiTask, setActivatedAiTask }}>
             {children}
         </TaskContext.Provider>
     )

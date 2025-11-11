@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom';
-import heroImage from '../assets/react.svg'
 import { useRef } from 'react';
 
 
@@ -41,7 +40,30 @@ const HeroSection = () => {
                     <div className='w-[14px] h-[14px] rounded-[50%] bg-glass'></div>
                     <div className='w-[14px] h-[14px] rounded-[50%] bg-glass'></div>
                 </div>
-                <img src={heroImage} alt="" className='w-[98%] mt-8 mb-1.5 rounded-md' />
+            </div>
+
+            {/* Hero Image/Visual */}
+            <div className="mt-16 relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-600/10 dark:from-blue-500/20 dark:to-purple-600/20 blur-3xl"></div>
+                <div className="relative w-full rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-2xl bg-white dark:bg-gray-900">
+                    <div className="p-8">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {['To Do', 'In Progress', 'Completed'].map((column, idx) => (
+                                <div key={idx} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                                    <h3 className="font-semibold text-gray-900 dark:text-white mb-3">{column}</h3>
+                                    <div className="space-y-2">
+                                        {[1, 2].map((card) => (
+                                            <div key={card} className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+                                                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+                                                <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded w-1/2"></div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </div>
         </section >
     )
