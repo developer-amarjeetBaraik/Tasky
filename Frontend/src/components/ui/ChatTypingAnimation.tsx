@@ -1,5 +1,3 @@
-import React from 'react'
-
 const ChatTypingAnimation = ({ variant = 'bold' }: { variant?: 'thin' | 'bold' | 'ai-thinking' }) => {
     return (
         <>{

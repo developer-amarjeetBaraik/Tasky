@@ -1,4 +1,3 @@
-import useTaskFeatures from '@/hooks/useTaskFeatures';
 import { TaskAiSocket } from '@/sockets/namespace/taskAiSocket';
 import type { TaskSocketContextType } from '@/types.socket';
 import React, { createContext, useEffect, useState } from 'react'
@@ -9,8 +8,6 @@ const TaskSocketStore = ({ children }: { children: React.ReactNode }) => {
     const [taskAiThinking, setTaskAiThinking] = useState<TaskSocketContextType['taskAiThinking']>(false)
     const [taskAiChunkReply, setTaskAiChunkReply] = useState<TaskSocketContextType['taskAiChunkReply']>()
     const [aiTaskChats, setAiTaskChats] = useState<TaskSocketContextType['aiTaskChats']>([])
-
-    const dummyChunks = ['adk ajdfi jaisodjf aiosdjf asidjf', 'foaisdif aisdojf asdifj aisdjf jiasdjf jifjad jaiosdjff8isdjf jiadj', 'ifasidf jasidfj ajisd aisdjf iasjdf ajsdif jasiodj fjoawoineoi joansdf aoif asdofj aosd fn ffasd', 'fiohasd asdh adsoh asodj asod asdijf adsoija sdihasdih asd', 'fiasdi asdihfw8eh fhe8 h9a 9e h9dhf8hehahdf8h89h ha8dhf ashdfh haidhf', 'hauisd hfaosdh haosdh ehofie aoieoa']
 
     // Socket events listeners
     useEffect(() => {
@@ -56,7 +53,7 @@ const TaskSocketStore = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <TaskSocketContext.Provider value={{ askTaskAi, taskAiThinking, taskAiChunkReply, aiTaskChats, setAiTaskChats }}>
+        <TaskSocketContext.Provider value={{ askTaskAi, taskAiThinking, taskAiChunkReply,setTaskAiChunkReply, aiTaskChats, setAiTaskChats }}>
             {children}
         </TaskSocketContext.Provider>
     )

@@ -16,7 +16,6 @@ import { Toaster } from 'sonner'
 import BoardSocketStore from './stores/BoardSocketStore.tsx'
 import TaskSocketStore from './stores/TaskSocketStore.tsx'
 import TaskAiChatPage from './layouts/TaskAiChatPage.tsx'
-import LandingPage2 from './layouts/landingPage2.tsx'
 
 const router = createBrowserRouter([
   {
@@ -68,10 +67,6 @@ const router = createBrowserRouter([
         </TaskSocketStore>
       </BoardStore>
     </AuthProtectedRoutes>,
-  },
-  {
-    path: '/landing',
-    element: <LandingPage2 />
   },
   {
     path: '*',

@@ -1,4 +1,4 @@
-import { Check, Zap, Users, Brain, Layout, BarChart3, Lock, Sparkles, ArrowRight } from 'lucide-react';
+import { Zap, Users, Brain, Layout, BarChart3, Lock } from 'lucide-react';
 
  const features = [
     {

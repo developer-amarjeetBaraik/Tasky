@@ -30,6 +30,7 @@ export type TaskSocketContextType = {
   askTaskAi: (taskId: string, prompt: string) => void
   taskAiThinking: boolean
   taskAiChunkReply: string | undefined
+  setTaskAiChunkReply:React.Dispatch<React.SetStateAction<TaskSocketContextType['taskAiChunkReply']>>
   aiTaskChats: { _id: string, userId: string, taskId: string, message: string, role: 'user' | 'other', createdAt: Date }[],
   setAiTaskChats: React.Dispatch<React.SetStateAction<TaskSocketContextType['aiTaskChats']>>
 }
